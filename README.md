@@ -2,18 +2,18 @@
 
 ----
 
-## SwiftyLabel
+### SwiftyLabel
 
-#### Link Attributes
+##### 1.Link Attributes
 - Delegate Methods
 - Touch mask
 
-#### Enhanced Attachment
+##### 2.Enhanced Attachment
 - Vertical alignment
 - View based attachment
 
-#### Text Detectors
+##### 3.Text Detectors
 
-#### Asynchronous Text Rendering
+##### 4.Asynchronous Text Rendering
 
-#### Accessibility
+##### 5.Accessibility
