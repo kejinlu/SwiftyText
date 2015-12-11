@@ -1,8 +1,7 @@
 <img src="/Assets/swifty-text-logo.png" height="80">
-
 ----
 
-# SwiftyLabel
+## SwiftyLabel
 
 #### Link Attributes
 - Delegate Methods
