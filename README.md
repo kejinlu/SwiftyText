@@ -3,17 +3,16 @@
 ----
 
 # SwiftyLabel
+### Features
+- [x] Link Attribute
+- [x] Enhanced Attachment
+- [x] Text Detectors
+- [x] Asynchronous Text Rendering
+- [x] Accessibility
 
-#### Link Attributes
-- Delegate Methods
-- Touch mask
+### Requirements
+- iOS 8.0+
+- XCode 7.1+
 
-#### Enhanced Attachment
-- Vertical alignment
-- View based attachment
+### Installation
 
-#### Text Detectors
-
-#### Asynchronous Text Rendering
-
-#### Accessibility
