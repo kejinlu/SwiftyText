@@ -2,17 +2,21 @@
 
 ----
 
-# SwiftyLabel
-### Features
+## Goals & Features
 - [x] Link Attribute
 - [x] Enhanced Attachment
 - [x] Text Detectors
 - [x] Asynchronous Text Rendering
 - [x] Accessibility
 
-### Requirements
+## Requirements
 - iOS 8.0+
 - XCode 7.1+
 
-### Installation
+## Installation
+
+## Usage
+
+## Licenese
+SwiftyText is released under the MIT license. See LICENSE for details.
 
