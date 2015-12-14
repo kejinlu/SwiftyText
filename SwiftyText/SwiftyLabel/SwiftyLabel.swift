@@ -327,6 +327,18 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
                         link.highlightedMaskColor = textDetector.touchMaskColor
                     }
                     
+                    if let URL = result.URL {
+                        link.URL = URL
+                    }
+                    
+                    if let date = result.date {
+                        link.date = date
+                    }
+                    
+                    if let timeZone = result.timeZone {
+                        link.timeZone = timeZone
+                    }
+                    
                     self.textStorage.addAttribute(SwiftyTextLinkAttributeName, value: link, range: resultRange)
                 }
                 
@@ -483,12 +495,10 @@ public class SwiftyTextLink: NSObject {
     public var highlightedMaskRadius: CGFloat?
     public var highlightedMaskColor: UIColor?
     
-    
-    //TODO
     public var URL: NSURL?
     public var date: NSDate?
+    public var timeZone: NSTimeZone?
     public var phoneNumber: String?
-    
     
     public var userInfo: [String: AnyObject]?
     
