@@ -21,7 +21,7 @@
 
 ### Usage
 
-<img src="/Assets/demo.png" height="480"/>
+<img src="/Assets/demo.png" height="480" border="1"/>
 
 
 #### Basic properties
@@ -127,7 +127,7 @@ SwiftyText is released under the MIT license. See LICENSE for details.
 
 ### 使用
 
-<img src="/Assets/demo.png" height="480"/>
+<img src="/Assets/demo.png" height="480" border="1"/>
 
 
 #### 基本设置
