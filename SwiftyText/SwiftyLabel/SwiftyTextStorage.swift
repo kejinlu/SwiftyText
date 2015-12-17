@@ -63,6 +63,9 @@ public class SwiftyTextStorage : NSTextStorage{
         if self.isValidRange(range) {
             if link != nil {
                 self.addAttribute(SwiftyTextLinkAttributeName, value: link!, range: range)
+                if link!.attributes != nil {
+                    self.addAttributes(link!.attributes!, range: range)
+                }
             } else {
                 self.removeAttribute(SwiftyTextLinkAttributeName, range: range)
             }

@@ -167,6 +167,7 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         self.contentMode = .Redraw
         self.layoutManager.delegate = self
         let textGestureRecognizer = SwiftyLabelGestureRecognizer(target: self, action: "textGestureAction:")
+        textGestureRecognizer.delegate = self
         self.addGestureRecognizer(textGestureRecognizer)
         
         let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: "longPressAction:")
