@@ -17,7 +17,7 @@ public class SwiftyTextDetector: NSObject {
     public var replacementAttributedText:((checkingResult: NSTextCheckingResult, matchedAttributedText: NSAttributedString, sourceAttributedText: NSAttributedString) -> NSAttributedString?)?
     
     /// touch attributes
-    public var touchable: Bool = false
+    public var linkable: Bool = false
     public var touchMaskRadius: CGFloat?
     public var touchMaskColor: UIColor?
     

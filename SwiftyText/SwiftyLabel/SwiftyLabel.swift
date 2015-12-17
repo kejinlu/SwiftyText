@@ -8,7 +8,6 @@
 
 import Foundation
 
-public let SwiftyTextLinkAttributeName: String = "SwiftyTextLink"
 internal let SwiftyTextDetectorResultAttributeName: String = "SwiftyTextDetectorResult"
 
 
@@ -83,7 +82,8 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
             let range = NSMakeRange(0, self.textStorage.string.characters.count)
             self.textStorage.replaceCharactersInRange(range, withString: text!)
             self.updateTextParaphStyle()
-            self.processTextDetectorsWithRange(NSMakeRange(0, self.textStorage.length))
+            self.needsProcessDetectors = true
+            self.setNeedsDisplay()
         }
     }
     
@@ -93,8 +93,8 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         didSet {
             let range = NSMakeRange(0, self.textStorage.length)
             self.textStorage.replaceCharactersInRange(range, withAttributedString: attributedText!)
-            let newRange = NSMakeRange(0, attributedText!.length)
-            self.processTextDetectorsWithRange(newRange)
+            self.needsProcessDetectors = true
+            self.setNeedsDisplay()
         }
     }
     
@@ -117,8 +117,10 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
     public private(set) var layoutManager: NSLayoutManager
     public private(set) var textStorage: SwiftyTextStorage
     public private(set) var textDetectors: [SwiftyTextDetector]? = []
+    internal var needsProcessDetectors: Bool = false
     
     internal var asyncTextLayer: CALayer?
+    internal var asyncTextRenderQueue: dispatch_queue_t?
     public var drawsTextAsynchronously: Bool {
         didSet {
             if drawsTextAsynchronously {
@@ -126,14 +128,17 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
                     self.asyncTextLayer = CALayer()
                 }
                 self.layer.addSublayer(self.asyncTextLayer!)
+                self.asyncTextRenderQueue = dispatch_queue_create("com.geeklu.swiftylabel-async", DISPATCH_QUEUE_SERIAL);
             } else {
                 if self.asyncTextLayer != nil {
                     self.asyncTextLayer?.removeFromSuperlayer()
                     self.asyncTextLayer = nil
                 }
+                self.asyncTextRenderQueue = nil;
             }
         }
     }
+    
     
     internal var touchMaskLayer: CAShapeLayer?
     internal var touchRange: NSRange?
@@ -276,7 +281,8 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
     
     public func addTextDetector(detector: SwiftyTextDetector) {
         self.textDetectors?.append(detector)
-        self.processTextDetectorsWithRange(NSMakeRange(0, self.textStorage.length))
+        self.needsProcessDetectors = true
+        self.setNeedsDisplay()
     }
     
     public func removeTextDetector(detector: SwiftyTextDetector) {
@@ -286,7 +292,7 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         }
     }
     
-    public func processTextDetectorsWithRange(range: NSRange) {
+    public func processTextDetectors() {
         let text = self.textStorage.string
         for textDetector in self.textDetectors! {
             let checkingResults = textDetector.regularExpression.matchesInString(text, options: NSMatchingOptions(), range: NSMakeRange(0, text.characters.count))
@@ -316,7 +322,7 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
                     }
                 }
                 
-                if textDetector.touchable {
+                if textDetector.linkable {
                     let link = SwiftyTextLink()
                     link.highlightedAttributes = textDetector.highlightedAttributes
                     
@@ -331,12 +337,20 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
                         link.URL = URL
                     }
                     
+                    if let phoneNumber = result.phoneNumber {
+                        link.phoneNumber = phoneNumber
+                    }
+                    
                     if let date = result.date {
                         link.date = date
                     }
                     
                     if let timeZone = result.timeZone {
                         link.timeZone = timeZone
+                    }
+                    
+                    if let addressComponents = result.addressComponents {
+                        link.addressComponents = addressComponents
                     }
                     
                     self.textStorage.addAttribute(SwiftyTextLinkAttributeName, value: link, range: resultRange)
@@ -406,7 +420,12 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
     func drawTextWithRect(rect: CGRect, async: Bool) {
         
         if async {
-            dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), {
+            dispatch_async(self.asyncTextRenderQueue!, {
+                if self.needsProcessDetectors {
+                    self.processTextDetectors()
+                    self.needsProcessDetectors = false
+                }
+                
                 let constrainedSize = rect.size.insetsWith(self.textContainerInset)
                 if !CGSizeEqualToSize(self.textContainer.size, constrainedSize) {
                     self.textContainer.size = constrainedSize
@@ -432,6 +451,11 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
                 })
             })
         } else {
+            if self.needsProcessDetectors {
+                self.processTextDetectors()
+                self.needsProcessDetectors = false
+            }
+            
             let constrainedSize = rect.size.insetsWith(self.textContainerInset)
             if !CGSizeEqualToSize(self.textContainer.size, constrainedSize) {
                 self.textContainer.size = constrainedSize
@@ -487,23 +511,6 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         }
     }
 }
-
-public class SwiftyTextLink: NSObject {
-    public var attributes: [String: AnyObject]? //TODO
-    public var highlightedAttributes: [String: AnyObject]?
-    
-    public var highlightedMaskRadius: CGFloat?
-    public var highlightedMaskColor: UIColor?
-    
-    public var URL: NSURL?
-    public var date: NSDate?
-    public var timeZone: NSTimeZone?
-    public var phoneNumber: String?
-    
-    public var userInfo: [String: AnyObject]?
-    
-}
-
 
 extension CGSize {
     public func insetsWith(insets: UIEdgeInsets) -> CGSize{

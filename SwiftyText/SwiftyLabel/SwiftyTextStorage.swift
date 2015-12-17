@@ -59,6 +59,16 @@ public class SwiftyTextStorage : NSTextStorage{
         }
     }
     
+    public func setLink(link: SwiftyTextLink?, range:NSRange) {
+        if self.isValidRange(range) {
+            if link != nil {
+                self.addAttribute(SwiftyTextLinkAttributeName, value: link!, range: range)
+            } else {
+                self.removeAttribute(SwiftyTextLinkAttributeName, range: range)
+            }
+        }
+    }
+    
     /*
     if attachment's verticalOffset is nil, it will be assigned to the descender of the font of the neighbour
     */
