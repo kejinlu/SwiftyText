@@ -1,4 +1,4 @@
-<img src="/Assets/swifty-text-logo.png" height="80">
+<img src="/Assets/swifty-text-logo.png" height="80"/>
 
 ----
 
@@ -20,6 +20,9 @@
 ### Installation
 
 ### Usage
+
+<img src="/Assets/demo.png" height="480"/>
+
 
 #### Basic properties
 - **text** Assigning a new value to this property also replaces the value of the attributedText property with the same text, albeit without any inherent style attributes. Instead the label styles the new string using the font, textColor, and other style-related properties of the class.
@@ -62,7 +65,8 @@ label.textStorage.setLink(link, range: NSMakeRange(0, 5))
 
 
 #### TextDetector
-The **TBTextDetector** class designed 
+
+The properties of  **TBTextDetector** class:
 
 - **name** the name of the detector
 - **linkable** should make the matched text to be clickable 
@@ -100,7 +104,7 @@ Example:
 ```
 
 #### Other Text Kit Features
-Other features of Text Kit can be achieved by NSTextStorage，NSLayoutManager，andNSTextContainer。
+Other features of Text Kit can be achieved by NSTextStorage，NSLayoutManager，and NSTextContainer。
 
 ### Licenese
 SwiftyText is released under the MIT license. See LICENSE for details.
@@ -122,6 +126,9 @@ SwiftyText is released under the MIT license. See LICENSE for details.
 ### 安装
 
 ### 使用
+
+<img src="/Assets/demo.png" height="480"/>
+
 
 #### 基本设置
 - text 设置此属性 会替换掉原先设置的attributedText的文本,新文本使用textColor,font,textAlignment,lineSpacing这些属性进行样式的设置
