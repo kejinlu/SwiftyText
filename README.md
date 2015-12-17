@@ -2,6 +2,7 @@
 
 ----
 
+[![Build Status](https://travis-ci.org/kejinlu/SwiftyText.svg?branch=master)](https://travis-ci.org/kejinlu/SwiftyText)
 ## Goals & Features
 - [x] Link Attribute
 - [x] Enhanced Attachment
