@@ -21,9 +21,6 @@
 
 ### Usage
 
-<img src="/Assets/demo.png" height="480" border="1"/>
-
-
 #### Basic properties
 - **text** Assigning a new value to this property also replaces the value of the attributedText property with the same text, albeit without any inherent style attributes. Instead the label styles the new string using the font, textColor, and other style-related properties of the class.
 - **attributedText** Assigning a new value to this property also replaces the value of the text property with the same string data, albeit without any formatting information. In addition, assigning a new a value updates the values in the font, textColor, and other style-related properties so that they reflect the style information starting at location 0 in the attributed string.
@@ -103,6 +100,10 @@ Example:
  label.textStorage.insertAttachment(sliderAttachment, atIndex: 8)
 ```
 
+The screenshot of the demo:
+
+<img src="/Assets/demo.png" height="480"/>
+
 #### Other Text Kit Features
 Other features of Text Kit can be achieved by NSTextStorage，NSLayoutManager，and NSTextContainer。
 
@@ -126,9 +127,6 @@ SwiftyText is released under the MIT license. See LICENSE for details.
 ### 安装
 
 ### 使用
-
-<img src="/Assets/demo.png" height="480" border="1"/>
-
 
 #### 基本设置
 - text 设置此属性 会替换掉原先设置的attributedText的文本,新文本使用textColor,font,textAlignment,lineSpacing这些属性进行样式的设置
@@ -203,6 +201,10 @@ SwiftyTextAttachment在NSTextAttachment上做了增强，同时支持基于图�
  sliderAttachment.attachmentTextVerticalAlignment = .Center
  label.textStorage.insertAttachment(sliderAttachment, atIndex: 8)
 ```
+
+下图为demo的效果截图：
+
+<img src="/Assets/demo.png" height="480"/>
 
 #### 其余Text Kit的特性
 其余的Text Kit的特性可以通过 NSTextStorage， NSLayoutManager，以及NSTextContainer来实现。 比如要实现exclusionPaths
