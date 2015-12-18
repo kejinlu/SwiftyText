@@ -8,7 +8,7 @@
  
 ### Goals & Features
 - Link Attribute
-- Attachment Enhancements: vertical alignment, view based attachment
+- Attachment Enhancements: Vertical alignment, view based attachment
 - Text Detectors
 - Asynchronous Text Rendering
 - Accessibility
@@ -17,7 +17,14 @@
 - iOS 8.0+
 - XCode 7.1+
 
-### Installation
+### Integration
+
+#### Carthage
+You can use [Carthage](https://github.com/Carthage/Carthage) to install SwiftyText by adding it to your Cartfile:
+
+```
+github "kejinlu/SwiftyText"
+```
 
 ### Usage
 
@@ -44,12 +51,12 @@ label.drawsTextAsynchronously = true
 ```
 
 #### Link
-The **Link** Attribute convert a range of text to clickable items.
+The **Link** Attribute convert a range of text to clickable item.
 The **SwiftyTextLink** class is a model class designed to describe the link style and infomation.
-- **attributes** link attributes for the target text
-- **highlightedAttributes** When highlighted, set the highlightedAttributes to the target text
-- highlightedMaskRadius highlightedMaskColor settings for mask when highlighted
-- URL ,date,timeZone,phoneNumber,addressComponents .These properties used for specialized link such as URL links, phoneNumber links
+- **attributes**: Link attributes for the target text
+- **highlightedAttributes**: When highlighted, set the highlightedAttributes to the target text
+- **highlightedMaskRadius**, **highlightedMaskColor**: Stylish for mask when highlighted
+- **URL** ,**date**,**timeZone**,**phoneNumber**,**addressComponents**: These properties used for specialized link such as URL links, phoneNumber links
 
 Example：
 
@@ -65,12 +72,12 @@ label.textStorage.setLink(link, range: NSMakeRange(0, 5))
 
 The properties of  **TBTextDetector** class:
 
-- **name** the name of the detector
-- **linkable** should make the matched text to be clickable 
-- **regularExpression** the instance of  NSRegularExpression class or subclass
-- **attributes** text attributes for matched text
-- **highlightedAttributes** for the link attribute when linable is YES
-- **replacementBlock** return the attributed text for replacement
+- **name**: The name of the detector
+- **linkable**: Should make the matched text to be clickable 
+- **regularExpression**: The instance of  NSRegularExpression class or subclass
+- **attributes**: Text attributes for matched text
+- **highlightedAttributes**: for the link attribute when linable is YES
+- **replacementBlock**: When **attributes** is not statisfy the requirements use this block to return the attributed text for replacement
 
 Example:
 
@@ -105,7 +112,7 @@ The screenshot of the demo:
 <img src="/Assets/demo.png" height="480"/>
 
 #### Other Text Kit Features
-Other features of Text Kit can be achieved by NSTextStorage，NSLayoutManager，and NSTextContainer。
+Other features of Text Kit can be achieved by NSTextStorage，NSLayoutManager，and NSTextContainer through properties of SwiftyLabel.
 
 ### Licenese
 SwiftyText is released under the MIT license. See LICENSE for details.
@@ -124,7 +131,13 @@ SwiftyText is released under the MIT license. See LICENSE for details.
 - iOS 8.0+
 - XCode 7.1+
 
-### 安装
+### 集成
+
+你可以使用 [Carthage](https://github.com/Carthage/Carthage) 来集成 SwiftyText， 将以下依赖添加到你的Cartfile中:
+
+```
+github "kejinlu/SwiftyText"
+```
 
 ### 使用
 
