@@ -13,7 +13,7 @@ internal let SwiftyTextDetectorResultAttributeName: String = "SwiftyTextDetector
 
 public protocol SwiftyLabelDelegate: NSObjectProtocol {
     func swiftyLabel(swiftyLabel: SwiftyLabel, didTapWithTextLink link: SwiftyTextLink, range: NSRange)
-    func swiftyLabel(SwiftyLabel: SwiftyLabel, didLongPressWithTextLink link:SwiftyTextLink, range: NSRange)
+    func swiftyLabel(swiftyLabel: SwiftyLabel, didLongPressWithTextLink link:SwiftyTextLink, range: NSRange)
 }
 
 public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerDelegate {
@@ -260,7 +260,7 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
             self.setHighlight(false, withRange: self.touchRange!, textLink: self.touchLink!)
             switch gestureRecognizer.result {
             case .Tap:
-                self.delegate?.swiftyLabel(self, didLongPressWithTextLink: self.touchLink!, range: self.touchRange!)
+                self.delegate?.swiftyLabel(self, didTapWithTextLink: self.touchLink!, range: self.touchRange!)
                 break
             case .LongPress:
                 self.delegate?.swiftyLabel(self, didLongPressWithTextLink: self.touchLink!, range: self.touchRange!)
