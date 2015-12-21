@@ -263,7 +263,7 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
                 self.touchGlyphRects = effectiveGlyphRects
                 
                 let shapeLayer = CAShapeLayer()
-                shapeLayer.path = UIBezierPath.bezierPathWithGlyphRectValues(self.touchGlyphRects!, radius: (self.touchLink?.highlightedMaskRadius ?? 3.0)).CGPath
+                shapeLayer.path = UIBezierPath.bezierPathWithGlyphRects(self.touchGlyphRects!, radius: (self.touchLink?.highlightedMaskRadius ?? 3.0)).CGPath
                 shapeLayer.fillColor = self.touchLink?.highlightedMaskColor?.CGColor ?? UIColor.grayColor().colorWithAlphaComponent(0.3).CGColor
                 self.touchMaskLayer = shapeLayer
             }

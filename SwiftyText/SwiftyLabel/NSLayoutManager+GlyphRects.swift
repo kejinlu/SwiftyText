@@ -12,22 +12,21 @@ extension NSLayoutManager {
     func glyphRectsWithCharacterRange(range: NSRange, containerInset inset:UIEdgeInsets) -> [CGRect]? {
         
         let glyphRangeForCharacters = self.glyphRangeForCharacterRange(range, actualCharacterRange: nil)
-        var touchGlyphRects:[CGRect] = []
+        var glyphRects:[CGRect] = []
     
         self.enumerateLineFragmentsForGlyphRange(glyphRangeForCharacters, usingBlock: { (lineRect: CGRect, usedRect: CGRect, textContainer: NSTextContainer, glyphRange: NSRange, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
             
             let currentLineGlyphRange = NSIntersectionRange(glyphRangeForCharacters, glyphRange)
-            let glyphRect = self.boundingRectForGlyphRange(currentLineGlyphRange, inTextContainer: textContainer)
-            var glyphRectInContainerView = glyphRect
+            var glyphRectInContainerView = self.boundingRectForGlyphRange(currentLineGlyphRange, inTextContainer: textContainer)
             glyphRectInContainerView.origin.x += inset.left
             glyphRectInContainerView.origin.y += inset.top
             
             glyphRectInContainerView = CGRectInset(glyphRectInContainerView, -2, 0)
-            touchGlyphRects.append(glyphRectInContainerView)
+            glyphRects.append(glyphRectInContainerView)
         })
         
-        if touchGlyphRects.count > 0 {
-            return touchGlyphRects
+        if glyphRects.count > 0 {
+            return glyphRects
         }
         return nil
         
