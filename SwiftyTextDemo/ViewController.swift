@@ -83,5 +83,9 @@ class ViewController: UIViewController, SwiftyLabelDelegate {
     func swiftyLabel(swiftyLabel: SwiftyLabel, didLongPressWithTextLink link:SwiftyTextLink, range: NSRange){
         
     }
+    
+    func swiftyLabelShoudTouch(swiftyLabel: SwiftyLabel) -> Bool {
+        return true
+    }
 }
 

@@ -9,31 +9,30 @@
 import Foundation
 
 extension UIBezierPath{
-    class func bezierPathWithGlyphRectValues(rectValues: [NSValue], radius: CGFloat) -> UIBezierPath{
+    class func bezierPathWithGlyphRectValues(rects: [CGRect], radius: CGFloat) -> UIBezierPath{
         let path = UIBezierPath()
         
-        let rectCount = rectValues.count
+        let rectCount = rects.count
         
         for var i = 0; i < rectCount; i++ {
-            var previousRectValue:NSValue? = nil
-            var nextRectValue:NSValue? = nil
+            var previousRectValue:CGRect? = nil
+            var nextRectValue:CGRect? = nil
             if i > 0 {
-                previousRectValue = rectValues[i-1]
+                previousRectValue = rects[i-1]
             }
             if i < rectCount - 1 {
-                nextRectValue = rectValues[i+1]
+                nextRectValue = rects[i+1]
             }
             
             var rectCorners = UIRectCorner()
             
-            let currentRectValue = rectValues[i]
-            let currentRect = currentRectValue.CGRectValue()
+            let currentRect = rects[i]
             
             let currentRectMinX = CGRectGetMinX(currentRect)
             let currentRectMaxX = CGRectGetMaxX(currentRect)
             
             if previousRectValue != nil {
-                let previousRect = previousRectValue!.CGRectValue()
+                let previousRect = previousRectValue!
                 let previousRectMinX = CGRectGetMinX(previousRect)
                 let previousRectMaxX = CGRectGetMaxX(previousRect)
                 
@@ -50,7 +49,7 @@ extension UIBezierPath{
             }
             
             if nextRectValue != nil {
-                let nextRect = nextRectValue!.CGRectValue()
+                let nextRect = nextRectValue!
                 let nextRectMinX = CGRectGetMinX(nextRect)
                 let nextRectMaxX = CGRectGetMaxX(nextRect)
                 
