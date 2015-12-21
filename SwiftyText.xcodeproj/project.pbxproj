@@ -149,14 +149,14 @@
 		A35BAC5D1C1AC808004FFABC /* SwiftyLabel */ = {
 			isa = PBXGroup;
 			children = (
-				A35BAC5E1C1AC808004FFABC /* NSLayoutManager+GlyphRects.swift */,
 				A35BAC5F1C1AC808004FFABC /* SwiftyLabel.swift */,
-				A35BAC601C1AC808004FFABC /* SwiftyLabelGestureRecognizer.swift */,
+				A3987DE81C22964600CF5202 /* SwiftyTextLink.swift */,
+				A35BAC631C1AC808004FFABC /* SwiftyTextStorage.swift */,
 				A35BAC611C1AC808004FFABC /* SwiftyTextAttachment.swift */,
 				A35BAC621C1AC808004FFABC /* SwiftyTextDetector.swift */,
-				A35BAC631C1AC808004FFABC /* SwiftyTextStorage.swift */,
+				A35BAC601C1AC808004FFABC /* SwiftyLabelGestureRecognizer.swift */,
 				A35BAC641C1AC808004FFABC /* UIBezierPath+Rects.swift */,
-				A3987DE81C22964600CF5202 /* SwiftyTextLink.swift */,
+				A35BAC5E1C1AC808004FFABC /* NSLayoutManager+GlyphRects.swift */,
 			);
 			path = SwiftyLabel;
 			sourceTree = "<group>";

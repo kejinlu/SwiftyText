@@ -40,15 +40,15 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         }
     }
     
-    public var textAlignment: NSTextAlignment? {
+    public var textAlignment: NSTextAlignment {
         didSet {
-            self.updateTextParaphStyle()
+            self.updateTextParaphStyleWithPropertyName("alignment", value: NSNumber(integer: textAlignment.rawValue))
         }
     }
     
-    public var lineSpacing: CGFloat? {
+    public var lineSpacing: CGFloat {
         didSet {
-            self.updateTextParaphStyle()
+            self.updateTextParaphStyleWithPropertyName("lineSpacing", value: NSNumber(float: Float(lineSpacing)))
         }
     }
     
@@ -65,9 +65,9 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         }
     }
     
-    public var firstLineHeadIndent:CGFloat? {
+    public var firstLineHeadIndent:CGFloat {
         didSet {
-            self.updateTextParaphStyle()
+            self.updateTextParaphStyleWithPropertyName("firstLineHeadIndent", value: NSNumber(float: Float(firstLineHeadIndent)))
         }
     }
     
@@ -133,7 +133,6 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         }
     }
     
-    
     internal var touchMaskLayer: CALayer?
     internal var touchRange: NSRange?
     internal var touchGlyphRects: [CGRect]?
@@ -156,6 +155,9 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         self.textStorage.addLayoutManager(self.layoutManager)
         self.drawsTextAsynchronously = false;
         self.numberOfLines = 0
+        self.firstLineHeadIndent = 0
+        self.textAlignment = .Left
+        self.lineSpacing = 0
         
         super.init(frame: frame)
         self.contentMode = .Redraw
@@ -169,8 +171,15 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         fatalError("init(coder:) has not been implemented")
     }
     
-    /// location is relative to SwiftyLabel's bounds origin
-    public func linkAtLocation(location: CGPoint, effectiveRange range: NSRangePointer, effectiveGlyphRects: UnsafeMutablePointer<[CGRect]>) -> SwiftyTextLink? {
+    /**
+     Returns the link attribute at a given position, and by reference the range and the glyph rects of the link.
+     
+     - parameter location: is relative to SwiftyLabel's bounds origin
+     - parameter range: If non-NULL, upon return contains the range of the link returened
+     - parameter rects: If non-NULL, upon return contains all the glyph rects of the link
+     - returns: The link at location if existed, otherwise nil
+     */
+    public func linkAtLocation(location: CGPoint, effectiveRange range: NSRangePointer, effectiveGlyphRects rects: UnsafeMutablePointer<[CGRect]>) -> SwiftyTextLink? {
         var locationInTextContainer = location
         locationInTextContainer.x -= self.textContainerInset.left
         locationInTextContainer.y -= self.textContainerInset.top
@@ -190,7 +199,7 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
                 }
                 
                 if isInRect {
-                    effectiveGlyphRects.memory = glyphRects!
+                    rects.memory = glyphRects!
                     return link
                 }
             }
@@ -324,6 +333,26 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
     
     // MARK:- Internal attributed storage operation
     
+    internal func updateTextParaphStyle() {
+        self.updateTextParaphStyleWithPropertyName("alignment", value: NSNumber(integer: self.textAlignment.rawValue))
+        self.updateTextParaphStyleWithPropertyName("lineSpacing", value: NSNumber(float: Float(lineSpacing)))
+        self.updateTextParaphStyleWithPropertyName("firstLineHeadIndent", value: NSNumber(float: Float(firstLineHeadIndent)))
+    }
+    
+    internal func updateTextParaphStyleWithPropertyName(name: String, value: AnyObject) {
+        if self.text != nil {
+            let existedParagraphStyle = self.textStorage.attribute(NSParagraphStyleAttributeName, atIndex: 0, longestEffectiveRange: nil, inRange: NSMakeRange(0, self.textStorage.length))
+            var mutableParagraphStyle = existedParagraphStyle?.mutableCopy() as? NSMutableParagraphStyle
+            if mutableParagraphStyle == nil {
+                mutableParagraphStyle = NSMutableParagraphStyle()
+            }
+            
+            mutableParagraphStyle?.setValue(value, forKey: name)
+            self.textStorage.addAttribute(NSParagraphStyleAttributeName, value: mutableParagraphStyle!.copy(), range: NSMakeRange(0, self.textStorage.length))
+            self.setNeedsDisplay()
+        }
+    }
+    
     public func addTextDetector(detector: SwiftyTextDetector) {
         self.textDetectors?.append(detector)
         self.needsProcessDetectors = true
@@ -430,30 +459,7 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         }
     }
     
-    public func updateTextParaphStyle() {
-        if self.text != nil {
-            let existedParagraphStyle = self.textStorage.attribute(NSParagraphStyleAttributeName, atIndex: 0, longestEffectiveRange: nil, inRange: NSMakeRange(0, self.textStorage.length))
-            var mutableParagraphStyle = existedParagraphStyle?.mutableCopy() as? NSMutableParagraphStyle
-            if mutableParagraphStyle == nil {
-                mutableParagraphStyle = NSMutableParagraphStyle()
-            }
-            if self.textAlignment != nil {
-                mutableParagraphStyle!.alignment = self.textAlignment!
-            } else {
-                mutableParagraphStyle!.alignment = .Left
-            }
-            
-            if self.lineSpacing != nil {
-                mutableParagraphStyle!.lineSpacing = self.lineSpacing!
-            }
-            
-            if self.firstLineHeadIndent != nil {
-                mutableParagraphStyle!.firstLineHeadIndent = self.firstLineHeadIndent!
-            }
-            
-            self.textStorage.addAttribute(NSParagraphStyleAttributeName, value: mutableParagraphStyle!.copy(), range: NSMakeRange(0, self.textStorage.length))
-        }
-    }
+
     
     // MARK:- Draw
     
