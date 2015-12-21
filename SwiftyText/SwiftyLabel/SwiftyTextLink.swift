@@ -10,8 +10,10 @@ import Foundation
 
 public let SwiftyTextLinkAttributeName: String = "SwiftyTextLink"
 
+/// **SwiftyTextLink** holds link style information and identifier
+
 public class SwiftyTextLink: NSObject {
-    public var attributes: [String: AnyObject]? //TODO
+    public var attributes: [String: AnyObject]?
     public var highlightedAttributes: [String: AnyObject]?
     
     public var highlightedMaskRadius: CGFloat?
@@ -24,5 +26,4 @@ public class SwiftyTextLink: NSObject {
     public var addressComponents: [String : String]?
     
     public var userInfo: [String: AnyObject]?
-    
 }

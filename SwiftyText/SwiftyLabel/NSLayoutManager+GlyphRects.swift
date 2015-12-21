@@ -29,6 +29,5 @@ extension NSLayoutManager {
             return glyphRects
         }
         return nil
-        
     }
 }

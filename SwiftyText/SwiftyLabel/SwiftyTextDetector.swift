@@ -66,5 +66,4 @@ public class SwiftyTextDetector: NSObject {
         }
         return nil;
     }
-    
 }

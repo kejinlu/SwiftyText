@@ -10,35 +10,6 @@ import Foundation
 
 internal let SwiftyTextDetectorResultAttributeName: String = "SwiftyTextDetectorResult"
 
-
-public protocol SwiftyLabelDelegate: NSObjectProtocol {
-    
-    /// Delegate methods for the touch of link
-    func swiftyLable(swiftyLabel: SwiftyLabel, shouldTouchWithLink link: SwiftyTextLink, range: NSRange) -> Bool
-    func swiftyLabel(swiftyLabel: SwiftyLabel, didTapWithTextLink link: SwiftyTextLink, range: NSRange)
-    func swiftyLabel(swiftyLabel: SwiftyLabel, didLongPressWithTextLink link:SwiftyTextLink, range: NSRange)
-    
-    /// Delegate methods for the touch of label itselft
-    func swiftyLabelShoudTouch(swiftyLabel: SwiftyLabel) -> Bool
-    func swiftyLabelDidTap(swiftyLabel: SwiftyLabel)
-    func swiftyLabelDidLongPress(swiftyLabel: SwiftyLabel)
-}
-
-//Default implementations for SwiftyLabelDelegate
-public extension SwiftyLabelDelegate {
-    func swiftyLable(swiftyLabel: SwiftyLabel, shouldTouchWithLink link: SwiftyTextLink, range: NSRange) -> Bool {
-        return true
-    }
-    func swiftyLabel(swiftyLabel: SwiftyLabel, didTapWithTextLink link: SwiftyTextLink, range: NSRange){}
-    func swiftyLabel(swiftyLabel: SwiftyLabel, didLongPressWithTextLink link:SwiftyTextLink, range: NSRange){}
-    
-    func swiftyLabelShoudTouch(swiftyLabel: SwiftyLabel) -> Bool{
-        return false
-    }
-    func swiftyLabelDidTap(swiftyLabel: SwiftyLabel){}
-    func swiftyLabelDidLongPress(swiftyLabel: SwiftyLabel){}
-}
-
 public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerDelegate {
     
     // MARK:- Properties
@@ -584,6 +555,38 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
             }
         }
     }
+}
+
+
+/**
+ ## SwiftyLabelDelegate
+ */
+public protocol SwiftyLabelDelegate: NSObjectProtocol {
+    
+    /// Delegate methods for the touch of link
+    func swiftyLable(swiftyLabel: SwiftyLabel, shouldTouchWithLink link: SwiftyTextLink, range: NSRange) -> Bool
+    func swiftyLabel(swiftyLabel: SwiftyLabel, didTapWithTextLink link: SwiftyTextLink, range: NSRange)
+    func swiftyLabel(swiftyLabel: SwiftyLabel, didLongPressWithTextLink link:SwiftyTextLink, range: NSRange)
+    
+    /// Delegate methods for the touch of label itselft
+    func swiftyLabelShoudTouch(swiftyLabel: SwiftyLabel) -> Bool
+    func swiftyLabelDidTap(swiftyLabel: SwiftyLabel)
+    func swiftyLabelDidLongPress(swiftyLabel: SwiftyLabel)
+}
+
+//Default implementations for SwiftyLabelDelegate
+public extension SwiftyLabelDelegate {
+    func swiftyLable(swiftyLabel: SwiftyLabel, shouldTouchWithLink link: SwiftyTextLink, range: NSRange) -> Bool {
+        return true
+    }
+    func swiftyLabel(swiftyLabel: SwiftyLabel, didTapWithTextLink link: SwiftyTextLink, range: NSRange){}
+    func swiftyLabel(swiftyLabel: SwiftyLabel, didLongPressWithTextLink link:SwiftyTextLink, range: NSRange){}
+    
+    func swiftyLabelShoudTouch(swiftyLabel: SwiftyLabel) -> Bool{
+        return false
+    }
+    func swiftyLabelDidTap(swiftyLabel: SwiftyLabel){}
+    func swiftyLabelDidLongPress(swiftyLabel: SwiftyLabel){}
 }
 
 extension CGSize {
