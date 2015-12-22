@@ -133,7 +133,14 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         }
     }
     
-    internal var touchMaskLayer: CALayer?
+    /**
+     When the touch is enabled on SwiftyLabel itself, you can set the highlightLayerColor for the label when touch.
+     
+     - important: highlightLayerColor should apply the alpha component if you want.
+     */
+    public var highlightLayerColor: UIColor?;
+    
+    internal var touchHighlightLayer: CALayer?
     internal var touchRange: NSRange?
     internal var touchGlyphRects: [CGRect]?
     internal var touchLink: SwiftyTextLink?
@@ -243,17 +250,17 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
                 self.touchGlyphRects = effectiveGlyphRects
                 
                 let shapeLayer = CAShapeLayer()
-                shapeLayer.path = UIBezierPath.bezierPathWithGlyphRects(self.touchGlyphRects!, radius: (self.touchLink?.highlightedMaskRadius ?? 3.0)).CGPath
-                shapeLayer.fillColor = self.touchLink?.highlightedMaskColor?.CGColor ?? UIColor.grayColor().colorWithAlphaComponent(0.3).CGColor
-                self.touchMaskLayer = shapeLayer
+                shapeLayer.path = UIBezierPath.bezierPathWithGlyphRects(self.touchGlyphRects!, radius: (self.touchLink?.highlightLayerRadius ?? 3.0)).CGPath
+                shapeLayer.fillColor = self.touchLink?.highlightLayerColor?.CGColor ?? UIColor.grayColor().colorWithAlphaComponent(0.3).CGColor
+                self.touchHighlightLayer = shapeLayer
             }
         }
         
         if shouldTouchLabel && (link == nil || !shouldTouchLink){
-            let maskLayer = CALayer()
-            maskLayer.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.3).CGColor
-            maskLayer.frame = self.layer.bounds
-            self.touchMaskLayer = maskLayer
+            let highlightLayer = CALayer()
+            highlightLayer.backgroundColor = self.highlightLayerColor?.CGColor ?? UIColor.grayColor().colorWithAlphaComponent(0.3).CGColor
+            highlightLayer.frame = self.layer.bounds
+            self.touchHighlightLayer = highlightLayer
         }
         
         if (link != nil && shouldTouchLink) || shouldTouchLabel {
@@ -266,15 +273,15 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
     internal func textGestureAction(gestureRecognizer: SwiftyLabelGestureRecognizer){
         switch gestureRecognizer.state {
         case .Began:
-            if self.touchMaskLayer != nil {
-                self.layer.addSublayer(self.touchMaskLayer!)
+            if self.touchHighlightLayer != nil {
+                self.layer.addSublayer(self.touchHighlightLayer!)
             }
             if self.touchLink != nil {
                 self.setHighlight(true, withRange: self.touchRange!, textLink: self.touchLink!)
             }
             break
         case .Changed:
-            if self.touchLink != nil && self.touchMaskLayer != nil {
+            if self.touchLink != nil && self.touchHighlightLayer != nil {
                 let location = gestureRecognizer.locationInView(self)
                 var isInRect = false
                 for rectValue in self.touchGlyphRects! {
@@ -284,14 +291,14 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
                     }
                 }
                 if isInRect {
-                    if self.touchMaskLayer?.superlayer != self.layer {
-                        self.layer.addSublayer(self.touchMaskLayer!)
+                    if self.touchHighlightLayer?.superlayer != self.layer {
+                        self.layer.addSublayer(self.touchHighlightLayer!)
                         self.setHighlight(true, withRange: self.touchRange!, textLink: self.touchLink!)
                     }
                     
                 } else {
-                    if self.touchMaskLayer?.superlayer == self.layer {
-                        self.touchMaskLayer!.removeFromSuperlayer()
+                    if self.touchHighlightLayer?.superlayer == self.layer {
+                        self.touchHighlightLayer!.removeFromSuperlayer()
                         self.setHighlight(false, withRange: self.touchRange!, textLink: self.touchLink!)
                     }
                 }
@@ -299,7 +306,7 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
             break
         case .Ended:
             
-            self.touchMaskLayer?.removeFromSuperlayer()
+            self.touchHighlightLayer?.removeFromSuperlayer()
             if self.touchLink != nil {
                 self.setHighlight(false, withRange: self.touchRange!, textLink: self.touchLink!)
             }
@@ -323,7 +330,7 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
             }
 
             self.touchLink = nil
-            self.touchMaskLayer = nil
+            self.touchHighlightLayer = nil
             self.touchAttributesMap = nil
             break
         default:
@@ -400,11 +407,11 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
                     let link = SwiftyTextLink()
                     link.highlightedAttributes = textDetector.highlightedAttributes
                     
-                    if textDetector.touchMaskRadius != nil {
-                        link.highlightedMaskRadius = textDetector.touchMaskRadius
+                    if textDetector.highlightLayerRadius != nil {
+                        link.highlightLayerRadius = textDetector.highlightLayerRadius
                     }
-                    if textDetector.touchMaskColor != nil {
-                        link.highlightedMaskColor = textDetector.touchMaskColor
+                    if textDetector.highlightLayerColor != nil {
+                        link.highlightLayerColor = textDetector.highlightLayerColor
                     }
                     
                     if let URL = result.URL {

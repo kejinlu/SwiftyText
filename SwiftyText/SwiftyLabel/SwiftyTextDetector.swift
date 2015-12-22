@@ -30,8 +30,8 @@ public class SwiftyTextDetector: NSObject {
     
     /// touch attributes
     public var linkable: Bool = false
-    public var touchMaskRadius: CGFloat?
-    public var touchMaskColor: UIColor?
+    public var highlightLayerRadius: CGFloat?
+    public var highlightLayerColor: UIColor?
     
     public init(name:String, regularExpression: NSRegularExpression, attributes: [String : AnyObject]?) {
         self.name = name
