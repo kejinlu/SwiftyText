@@ -50,7 +50,7 @@ class ViewController: UIViewController, SwiftyLabelDelegate {
 
         let detector = SwiftyTextDetector.detectorWithType([.URL,.Address])
         if detector != nil {
-            label.addTextDetector(detector!)
+            label.parser = detector
         }
         
         self.view.addSubview(label)

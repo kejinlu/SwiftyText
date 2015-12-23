@@ -11,7 +11,18 @@ import UIKit
 
 public class SwiftyTextStorage : NSTextStorage{
     internal var storage: NSMutableAttributedString
-    internal var viewAttachments:[SwiftyTextAttachment] = []
+    internal var viewAttachments:[SwiftyTextAttachment] {
+        var attachments = [SwiftyTextAttachment]()
+        self.enumerateAttribute(NSAttachmentAttributeName, inRange: NSMakeRange(0, self.length), options:[]) { (value: AnyObject?, range: NSRange, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
+            if value != nil && value is SwiftyTextAttachment {
+                let attachment = value as! SwiftyTextAttachment
+                if attachment.contentView != nil {
+                    attachments.append(attachment)
+                }
+            }
+        }
+        return attachments
+    }
     
     // MARK:- Init
     public override init(string str: String, attributes attrs: [String : AnyObject]?){
@@ -78,11 +89,6 @@ public class SwiftyTextStorage : NSTextStorage{
     public func insertAttachment(attachment:SwiftyTextAttachment?, atIndex loc:Int) {
         if loc <= self.length {
             if attachment != nil {
-                if attachment?.contentView != nil &&
-                    !self.viewAttachments.contains(attachment!){
-                    self.viewAttachments.append(attachment!)
-                }
-                
                 if attachment?.verticalOffset == nil {
                     var neighbourFont: UIFont? = nil
                     if loc < self.length {

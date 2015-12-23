@@ -20,7 +20,7 @@ public struct SwiftyTextDetectorType: OptionSetType {
     public static let All = SwiftyTextDetectorType(rawValue: UInt.max)
 }
 
-public class SwiftyTextDetector: NSObject {
+public class SwiftyTextDetector: NSObject, SwiftyTextParser {
     public var name:String
     public var regularExpression: NSRegularExpression
     public var attributes: [String : AnyObject]?
@@ -39,6 +39,74 @@ public class SwiftyTextDetector: NSObject {
         self.attributes = attributes
         
         super.init()
+    }
+    
+    public func parseText(attributedText: NSMutableAttributedString) {
+        let text = attributedText.string
+        let checkingResults = self.regularExpression.matchesInString(text, options: NSMatchingOptions(), range: NSMakeRange(0, text.characters.count))
+        
+        for result in checkingResults.reverse() {
+            let checkingRange = result.range
+            var resultRange = checkingRange
+            
+            if checkingRange.location == NSNotFound {
+                continue
+            }
+            
+            let detectorResultAttribute = attributedText.attribute(SwiftyTextDetectorResultAttributeName, atIndex: checkingRange.location, longestEffectiveRange: nil, inRange: checkingRange)
+            if detectorResultAttribute != nil {
+                continue
+            }
+            
+            if let attributes = self.attributes {
+                attributedText.addAttributes(attributes, range: checkingRange)
+            }
+            
+            if let replacementFunc = self.replacementAttributedText {
+                let replacement = replacementFunc(checkingResult: result, matchedAttributedText: attributedText.attributedSubstringFromRange(checkingRange), sourceAttributedText: attributedText)
+                if replacement != nil {
+                    attributedText.replaceCharactersInRange(checkingRange, withAttributedString: replacement!)
+                    resultRange.length = replacement!.length
+                }
+            }
+            
+            if self.linkable {
+                let link = SwiftyTextLink()
+                link.highlightedAttributes = self.highlightedAttributes
+                
+                if self.highlightLayerRadius != nil {
+                    link.highlightLayerRadius = self.highlightLayerRadius
+                }
+                if self.highlightLayerColor != nil {
+                    link.highlightLayerColor = self.highlightLayerColor
+                }
+                
+                if let URL = result.URL {
+                    link.URL = URL
+                }
+                
+                if let phoneNumber = result.phoneNumber {
+                    link.phoneNumber = phoneNumber
+                }
+                
+                if let date = result.date {
+                    link.date = date
+                }
+                
+                if let timeZone = result.timeZone {
+                    link.timeZone = timeZone
+                }
+                
+                if let addressComponents = result.addressComponents {
+                    link.addressComponents = addressComponents
+                }
+                
+                attributedText.addAttribute(SwiftyTextLinkAttributeName, value: link, range: resultRange)
+            }
+            
+            attributedText.addAttribute(SwiftyTextDetectorResultAttributeName, value: self, range: resultRange)
+        }
+
     }
 
     public class func detectorWithType(type: SwiftyTextDetectorType) ->  SwiftyTextDetector?{

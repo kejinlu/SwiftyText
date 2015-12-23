@@ -76,7 +76,7 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
             let range = NSMakeRange(0, self.textStorage.string.characters.count)
             self.textStorage.replaceCharactersInRange(range, withString: text!)
             self.updateTextParaphStyle()
-            self.needsProcessDetectors = true
+            self.needsParse = true
             self.setNeedsDisplay()
         }
     }
@@ -87,7 +87,7 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         didSet {
             let range = NSMakeRange(0, self.textStorage.length)
             self.textStorage.replaceCharactersInRange(range, withAttributedString: attributedText!)
-            self.needsProcessDetectors = true
+            self.needsParse = true
             self.setNeedsDisplay()
         }
     }
@@ -110,8 +110,14 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
     
     public private(set) var layoutManager: NSLayoutManager
     public private(set) var textStorage: SwiftyTextStorage
-    public private(set) var textDetectors: [SwiftyTextDetector]? = []
-    internal var needsProcessDetectors: Bool = false
+    
+    public var parser: SwiftyTextParser? {
+        didSet {
+            self.needsParse = true
+            self.setNeedsDisplay()
+        }
+    }
+    internal var needsParse: Bool = false
     
     internal var asyncTextLayer: CALayer?
     internal var asyncTextRenderQueue: dispatch_queue_t?
@@ -360,88 +366,6 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         }
     }
     
-    public func addTextDetector(detector: SwiftyTextDetector) {
-        self.textDetectors?.append(detector)
-        self.needsProcessDetectors = true
-        self.setNeedsDisplay()
-    }
-    
-    public func removeTextDetector(detector: SwiftyTextDetector) {
-        let detectorIndex = self.textDetectors?.indexOf(detector)
-        if detectorIndex != nil {
-            self.textDetectors?.removeAtIndex(detectorIndex!)
-        }
-    }
-    
-    public func processTextDetectors() {
-        let text = self.textStorage.string
-        for textDetector in self.textDetectors! {
-            let checkingResults = textDetector.regularExpression.matchesInString(text, options: NSMatchingOptions(), range: NSMakeRange(0, text.characters.count))
-            
-            for result in checkingResults.reverse() {
-                let checkingRange = result.range
-                var resultRange = checkingRange
-                
-                if checkingRange.location == NSNotFound {
-                    continue
-                }
-                
-                let detectorResultAttribute = self.textStorage.attribute(SwiftyTextDetectorResultAttributeName, atIndex: checkingRange.location, longestEffectiveRange: nil, inRange: checkingRange)
-                if detectorResultAttribute != nil {
-                    continue
-                }
-                
-                if let attributes = textDetector.attributes {
-                    self.textStorage.addAttributes(attributes, range: checkingRange)
-                }
-                
-                if let replacementFunc = textDetector.replacementAttributedText {
-                    let replacement = replacementFunc(checkingResult: result, matchedAttributedText: self.textStorage.attributedSubstringFromRange(checkingRange), sourceAttributedText: self.textStorage)
-                    if replacement != nil {
-                        self.textStorage.replaceCharactersInRange(checkingRange, withAttributedString: replacement!)
-                        resultRange.length = replacement!.length
-                    }
-                }
-                
-                if textDetector.linkable {
-                    let link = SwiftyTextLink()
-                    link.highlightedAttributes = textDetector.highlightedAttributes
-                    
-                    if textDetector.highlightLayerRadius != nil {
-                        link.highlightLayerRadius = textDetector.highlightLayerRadius
-                    }
-                    if textDetector.highlightLayerColor != nil {
-                        link.highlightLayerColor = textDetector.highlightLayerColor
-                    }
-                    
-                    if let URL = result.URL {
-                        link.URL = URL
-                    }
-                    
-                    if let phoneNumber = result.phoneNumber {
-                        link.phoneNumber = phoneNumber
-                    }
-                    
-                    if let date = result.date {
-                        link.date = date
-                    }
-                    
-                    if let timeZone = result.timeZone {
-                        link.timeZone = timeZone
-                    }
-                    
-                    if let addressComponents = result.addressComponents {
-                        link.addressComponents = addressComponents
-                    }
-                    
-                    self.textStorage.addAttribute(SwiftyTextLinkAttributeName, value: link, range: resultRange)
-                }
-                
-                self.textStorage.addAttribute(SwiftyTextDetectorResultAttributeName, value: textDetector, range: resultRange)
-            }
-        }
-    }
-    
     internal func setHighlight(highlighted: Bool, withRange range:NSRange, textLink link:SwiftyTextLink) {
         if link.highlightedAttributes != nil {
             if highlighted {
@@ -479,9 +403,9 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         
         if async {
             dispatch_async(self.asyncTextRenderQueue!, {
-                if self.needsProcessDetectors {
-                    self.processTextDetectors()
-                    self.needsProcessDetectors = false
+                if self.needsParse {
+                    self.parser?.parseText(self.textStorage)
+                    self.needsParse = false
                 }
                 
                 let constrainedSize = rect.size.insetsWith(self.textContainerInset)
@@ -509,9 +433,9 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
                 })
             })
         } else {
-            if self.needsProcessDetectors {
-                self.processTextDetectors()
-                self.needsProcessDetectors = false
+            if self.needsParse {
+                self.parser?.parseText(self.textStorage)
+                self.needsParse = false
             }
             
             let constrainedSize = rect.size.insetsWith(self.textContainerInset)
@@ -569,7 +493,6 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         }
     }
 }
-
 
 /**
  ## SwiftyLabelDelegate
