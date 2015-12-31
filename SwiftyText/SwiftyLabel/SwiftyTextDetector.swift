@@ -20,6 +20,9 @@ public struct SwiftyTextDetectorType: OptionSetType {
     public static let All = SwiftyTextDetectorType(rawValue: UInt.max)
 }
 
+/**
+ SwiftyTextDetector is a kind of SwiftyTextParser
+ */
 public class SwiftyTextDetector: NSObject, SwiftyTextParser {
     public var name:String
     public var regularExpression: NSRegularExpression
@@ -28,8 +31,10 @@ public class SwiftyTextDetector: NSObject, SwiftyTextParser {
 
     public var replacementAttributedText:((checkingResult: NSTextCheckingResult, matchedAttributedText: NSAttributedString, sourceAttributedText: NSAttributedString) -> NSAttributedString?)?
     
-    /// touch attributes
+    /// link attributes
     public var linkable: Bool = false
+    public var linkGestures: SwiftyTextLinkGesture = [.Tap]
+    
     public var highlightLayerRadius: CGFloat?
     public var highlightLayerColor: UIColor?
     
@@ -80,6 +85,8 @@ public class SwiftyTextDetector: NSObject, SwiftyTextParser {
                 if self.highlightLayerColor != nil {
                     link.highlightLayerColor = self.highlightLayerColor
                 }
+                
+                link.gestures = self.linkGestures
                 
                 if let URL = result.URL {
                     link.URL = URL

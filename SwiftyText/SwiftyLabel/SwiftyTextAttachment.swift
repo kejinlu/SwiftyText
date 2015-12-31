@@ -18,11 +18,14 @@ public enum TBTextAttachmentTextVerticalAlignment: Int {
 public class SwiftyTextAttachment: NSTextAttachment {
     public var contentView: UIView?
     public private(set) var contentViewFrameInTextContainer:CGRect?
-    public var contentViewPadding: CGFloat = 0.0
+    public var padding: CGFloat = 0.0
+    
+    public var imageSize: CGSize = CGSizeZero
     
     public var attachmentTextVerticalAlignment: TBTextAttachmentTextVerticalAlignment = .Bottom
     
-    public var verticalOffset:CGFloat? = nil //default is nil
+    public var verticalOffset: CGFloat = 0
+    public var fontDescender: CGFloat = 0
     
     public var userInfo:[String: AnyObject?]?
     
@@ -37,11 +40,13 @@ public class SwiftyTextAttachment: NSTextAttachment {
                 if textContainer != nil {
                     lineFragmentPadding = textContainer!.lineFragmentPadding
                 }
-                contentViewFrameInTextContainer = CGRectMake(position.x  + self.contentViewPadding + lineFragmentPadding, position.y, attachmentBounds.size.width, attachmentBounds.size.height);
-                attachmentBounds.size.width += (self.contentViewPadding * 2);
+                contentViewFrameInTextContainer = CGRectMake(position.x  + self.padding + lineFragmentPadding, position.y, attachmentBounds.size.width, attachmentBounds.size.height);
+                attachmentBounds.size.width += (self.padding * 2);
             }
             return attachmentBounds
         }
+        
+        let totalOffset = self.verticalOffset + self.fontDescender
         
         if self.image != nil || self.contentView != nil {
             var attachmentSize = CGSizeZero
@@ -57,37 +62,45 @@ public class SwiftyTextAttachment: NSTextAttachment {
                 break
             case .Center :
                 let y = (CGRectGetHeight(lineFrag) - attachmentSize.height)/2;
-                attachmentBounds = CGRectMake(0, y + self.verticalOffset!, attachmentSize.width, attachmentSize.height)
+                attachmentBounds = CGRectMake(0, y + totalOffset, attachmentSize.width, attachmentSize.height)
                 break
             case .Top :
-                attachmentBounds = CGRectMake(0, CGRectGetHeight(lineFrag) - attachmentSize.height + self.verticalOffset!, attachmentSize.width, attachmentSize.height);
+                attachmentBounds = CGRectMake(0, CGRectGetHeight(lineFrag) - attachmentSize.height + totalOffset, attachmentSize.width, attachmentSize.height);
                 break
             case .Scale :
                 let scale = CGRectGetHeight(lineFrag)/attachmentSize.height;
-                attachmentBounds = CGRectMake(0, self.verticalOffset!, attachmentSize.width * scale, attachmentSize.height * scale);
+                attachmentBounds = CGRectMake(0, totalOffset, attachmentSize.width * scale, attachmentSize.height * scale);
                 if (self.contentView != nil) {
                     var contnetViewFrame = self.contentView!.frame;
                     contnetViewFrame.size = attachmentBounds.size;
-                    contentViewFrameInTextContainer = contnetViewFrame;
+                    self.contentViewFrameInTextContainer = contnetViewFrame;
                 }
                 break
             }
             
             if (self.contentView != nil) {
-                attachmentBounds.size.width += (self.contentViewPadding * 2);
+                attachmentBounds.size.width += (self.padding * 2);
                 var contentViewFrame = self.contentView!.frame;
                 var lineFragmentPadding:CGFloat = 0.0
                 if textContainer != nil {
                     lineFragmentPadding = textContainer!.lineFragmentPadding
                 }
-                contentViewFrame.origin.x = position.x  + self.contentViewPadding + lineFragmentPadding
+                contentViewFrame.origin.x = position.x  + self.padding + lineFragmentPadding
                 contentViewFrame.origin.y = position.y;
-                contentViewFrameInTextContainer = contentViewFrame;
+                self.contentViewFrameInTextContainer = contentViewFrame;
             }
         } else {
             attachmentBounds = super.attachmentBoundsForTextContainer(textContainer, proposedLineFragment: lineFrag, glyphPosition: position, characterIndex: charIndex);
         }
         
         return attachmentBounds
+    }
+}
+
+public class SwiftyTextBlankAttachment: NSTextAttachment {
+    public var width: CGFloat = 0.0 {
+        didSet {
+            self.bounds = CGRectMake(0, 0, width, 1);
+        }
     }
 }

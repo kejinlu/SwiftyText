@@ -17,13 +17,14 @@
 		A35BAC581C1AC76A004FFABC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A35BAC561C1AC76A004FFABC /* LaunchScreen.storyboard */; };
 		A35BAC651C1AC808004FFABC /* NSLayoutManager+GlyphRects.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35BAC5E1C1AC808004FFABC /* NSLayoutManager+GlyphRects.swift */; };
 		A35BAC661C1AC808004FFABC /* SwiftyLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35BAC5F1C1AC808004FFABC /* SwiftyLabel.swift */; };
-		A35BAC671C1AC808004FFABC /* SwiftyLabelGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35BAC601C1AC808004FFABC /* SwiftyLabelGestureRecognizer.swift */; };
 		A35BAC681C1AC808004FFABC /* SwiftyTextAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35BAC611C1AC808004FFABC /* SwiftyTextAttachment.swift */; };
 		A35BAC691C1AC808004FFABC /* SwiftyTextDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35BAC621C1AC808004FFABC /* SwiftyTextDetector.swift */; };
 		A35BAC6A1C1AC808004FFABC /* SwiftyTextStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35BAC631C1AC808004FFABC /* SwiftyTextStorage.swift */; };
 		A35BAC6B1C1AC808004FFABC /* UIBezierPath+Rects.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35BAC641C1AC808004FFABC /* UIBezierPath+Rects.swift */; };
 		A35BAC6E1C1AC874004FFABC /* SwiftyText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A35BAC151C1AC705004FFABC /* SwiftyText.framework */; };
 		A37B90F11C2AC72500F37FA1 /* SwiftyTextParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37B90F01C2AC72500F37FA1 /* SwiftyTextParser.swift */; };
+		A37B91041C317BAA00F37FA1 /* SwiftyLabelLongPressRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37B91031C317BAA00F37FA1 /* SwiftyLabelLongPressRecognizer.swift */; };
+		A37B91061C317E1500F37FA1 /* SwiftyLabelTapRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37B91051C317E1500F37FA1 /* SwiftyLabelTapRecognizer.swift */; };
 		A3987DE91C22964600CF5202 /* SwiftyTextLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3987DE81C22964600CF5202 /* SwiftyTextLink.swift */; };
 /* End PBXBuildFile section */
 
@@ -47,7 +48,7 @@
 /* Begin PBXFileReference section */
 		A35BAC151C1AC705004FFABC /* SwiftyText.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftyText.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A35BAC181C1AC705004FFABC /* SwiftyText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftyText.h; sourceTree = "<group>"; };
-		A35BAC1A1C1AC705004FFABC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A35BAC1A1C1AC705004FFABC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Info.plist; sourceTree = "<group>"; };
 		A35BAC1F1C1AC705004FFABC /* SwiftyTextTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftyTextTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A35BAC241C1AC705004FFABC /* SwiftyTextTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftyTextTests.swift; sourceTree = "<group>"; };
 		A35BAC261C1AC705004FFABC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -60,12 +61,13 @@
 		A35BAC591C1AC76A004FFABC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A35BAC5E1C1AC808004FFABC /* NSLayoutManager+GlyphRects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSLayoutManager+GlyphRects.swift"; sourceTree = "<group>"; };
 		A35BAC5F1C1AC808004FFABC /* SwiftyLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyLabel.swift; sourceTree = "<group>"; };
-		A35BAC601C1AC808004FFABC /* SwiftyLabelGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyLabelGestureRecognizer.swift; sourceTree = "<group>"; };
 		A35BAC611C1AC808004FFABC /* SwiftyTextAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyTextAttachment.swift; sourceTree = "<group>"; };
 		A35BAC621C1AC808004FFABC /* SwiftyTextDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyTextDetector.swift; sourceTree = "<group>"; };
 		A35BAC631C1AC808004FFABC /* SwiftyTextStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyTextStorage.swift; sourceTree = "<group>"; };
 		A35BAC641C1AC808004FFABC /* UIBezierPath+Rects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIBezierPath+Rects.swift"; sourceTree = "<group>"; };
 		A37B90F01C2AC72500F37FA1 /* SwiftyTextParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyTextParser.swift; sourceTree = "<group>"; };
+		A37B91031C317BAA00F37FA1 /* SwiftyLabelLongPressRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyLabelLongPressRecognizer.swift; sourceTree = "<group>"; };
+		A37B91051C317E1500F37FA1 /* SwiftyLabelTapRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyLabelTapRecognizer.swift; sourceTree = "<group>"; };
 		A3987DE81C22964600CF5202 /* SwiftyTextLink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyTextLink.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -121,7 +123,6 @@
 			children = (
 				A35BAC5D1C1AC808004FFABC /* SwiftyLabel */,
 				A35BAC181C1AC705004FFABC /* SwiftyText.h */,
-				A35BAC1A1C1AC705004FFABC /* Info.plist */,
 			);
 			path = SwiftyText;
 			sourceTree = "<group>";
@@ -157,9 +158,11 @@
 				A35BAC611C1AC808004FFABC /* SwiftyTextAttachment.swift */,
 				A37B90F01C2AC72500F37FA1 /* SwiftyTextParser.swift */,
 				A35BAC621C1AC808004FFABC /* SwiftyTextDetector.swift */,
-				A35BAC601C1AC808004FFABC /* SwiftyLabelGestureRecognizer.swift */,
 				A35BAC641C1AC808004FFABC /* UIBezierPath+Rects.swift */,
 				A35BAC5E1C1AC808004FFABC /* NSLayoutManager+GlyphRects.swift */,
+				A37B91051C317E1500F37FA1 /* SwiftyLabelTapRecognizer.swift */,
+				A37B91031C317BAA00F37FA1 /* SwiftyLabelLongPressRecognizer.swift */,
+				A35BAC1A1C1AC705004FFABC /* Info.plist */,
 			);
 			path = SwiftyLabel;
 			sourceTree = "<group>";
@@ -304,6 +307,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A37B91041C317BAA00F37FA1 /* SwiftyLabelLongPressRecognizer.swift in Sources */,
 				A3987DE91C22964600CF5202 /* SwiftyTextLink.swift in Sources */,
 				A35BAC661C1AC808004FFABC /* SwiftyLabel.swift in Sources */,
 				A35BAC691C1AC808004FFABC /* SwiftyTextDetector.swift in Sources */,
@@ -311,8 +315,8 @@
 				A35BAC6A1C1AC808004FFABC /* SwiftyTextStorage.swift in Sources */,
 				A35BAC681C1AC808004FFABC /* SwiftyTextAttachment.swift in Sources */,
 				A35BAC6B1C1AC808004FFABC /* UIBezierPath+Rects.swift in Sources */,
-				A35BAC671C1AC808004FFABC /* SwiftyLabelGestureRecognizer.swift in Sources */,
 				A35BAC651C1AC808004FFABC /* NSLayoutManager+GlyphRects.swift in Sources */,
+				A37B91061C317E1500F37FA1 /* SwiftyLabelTapRecognizer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

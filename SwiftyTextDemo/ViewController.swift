@@ -25,7 +25,7 @@ class ViewController: UIViewController, SwiftyLabelDelegate {
         label.textColor = UIColor.blackColor()
         label.firstLineHeadIndent = 24
         label.drawsTextAsynchronously = true
-
+        label.supportedGestures = [.DoubleTap,.Tap,.LongPress]
         
 
         let link = SwiftyTextLink()
@@ -38,17 +38,19 @@ class ViewController: UIViewController, SwiftyLabelDelegate {
         
         let imageAttachment = SwiftyTextAttachment()
         imageAttachment.image = UIImage(named: "swift")
-        imageAttachment.attachmentTextVerticalAlignment = .Top
-        label.textStorage.insertAttachment(imageAttachment, atIndex: label.textStorage.length)
+        imageAttachment.attachmentTextVerticalAlignment = .Center
+        imageAttachment.padding = 10.0
+        label.textStorage.insertAttachment(imageAttachment, atIndex: label.textStorage.length - 9)
         
         let sliderAttachment = SwiftyTextAttachment()
         let slider = UISlider()
         sliderAttachment.contentView = slider;
-        sliderAttachment.contentViewPadding = 3.0
+        sliderAttachment.padding = 3.0
         sliderAttachment.attachmentTextVerticalAlignment = .Center
         label.textStorage.insertAttachment(sliderAttachment, atIndex: 8)
 
         let detector = SwiftyTextDetector.detectorWithType([.URL,.Address])
+        detector!.linkGestures = [.Tap, .LongPress]
         if detector != nil {
             label.parser = detector
         }

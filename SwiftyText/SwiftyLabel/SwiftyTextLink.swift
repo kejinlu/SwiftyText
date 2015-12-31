@@ -24,6 +24,8 @@ public let SwiftyTextLinkAttributeName: String = "SwiftyTextLink"
  
 */
 public class SwiftyTextLink: NSObject {
+    public var gestures: SwiftyTextLinkGesture = [.Tap]
+    
     public var attributes: [String: AnyObject]?
     public var highlightedAttributes: [String: AnyObject]?
     
@@ -37,4 +39,14 @@ public class SwiftyTextLink: NSObject {
     public var addressComponents: [String : String]?
     
     public var userInfo: [String: AnyObject]?
+}
+
+
+public struct SwiftyTextLinkGesture: OptionSetType {
+    public let rawValue: UInt
+    public init(rawValue: UInt){ self.rawValue = rawValue}
+    
+    public static let None = SwiftyTextLinkGesture(rawValue: 0)
+    public static let Tap = SwiftyTextLinkGesture(rawValue: 1)
+    public static let LongPress = SwiftyTextLinkGesture(rawValue: 1 << 1)
 }

@@ -12,15 +12,19 @@ public protocol SwiftyTextParser {
     func parseText(attributedText: NSMutableAttributedString)
 }
 
-
-public class SwiftyTextSuperParser: SwiftyTextParser{
+public class SwiftyTextSuperParser:NSObject, SwiftyTextParser{
+    
+    public init(parsers: [SwiftyTextParser]) {
+        self.subParsers = parsers
+        super.init()
+    }
     
     public var subParsers: [SwiftyTextParser]?
     
-    public func parseText(text: NSMutableAttributedString) {
+    public func parseText(attributedText: NSMutableAttributedString) {
         if subParsers != nil {
             for subParser in self.subParsers! {
-                subParser.parseText(text)
+                subParser.parseText(attributedText)
             }
         }
     }

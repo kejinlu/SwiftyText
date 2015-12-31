@@ -86,25 +86,25 @@ public class SwiftyTextStorage : NSTextStorage{
     /*
     if attachment's verticalOffset is nil, it will be assigned to the descender of the font of the neighbour
     */
-    public func insertAttachment(attachment:SwiftyTextAttachment?, atIndex loc:Int) {
+    public func insertAttachment(attachment:SwiftyTextAttachment, atIndex loc:Int) {
         if loc <= self.length {
-            if attachment != nil {
-                if attachment?.verticalOffset == nil {
-                    var neighbourFont: UIFont? = nil
-                    if loc < self.length {
-                        neighbourFont = self.attribute(NSFontAttributeName, atIndex: loc, effectiveRange: nil) as? UIFont
-                    } else if loc - 1 >= 0 {
-                        neighbourFont = self.attribute(NSFontAttributeName, atIndex: loc - 1, effectiveRange: nil) as? UIFont
-                    }
+            attachment.fontDescender = self.neighbourFontDescenderWithRange(NSMakeRange(loc, 0))
+            var attachmentAttributedString = NSAttributedString(attachment: attachment)
+            //使用空白Attachment曲线解决图片padding的问题
+            if attachment.image != nil &&
+                attachment.contentView == nil &&
+                attachment.padding > 0 {
+                    let paddingAttachment = SwiftyTextBlankAttachment()
+                    paddingAttachment.width = attachment.padding
+                    let paddingAttributedString = NSAttributedString(attachment: paddingAttachment)
                     
-                    if neighbourFont != nil {
-                        attachment?.verticalOffset = neighbourFont!.descender
-                    }
-                }
-                
-                let attachmentAttributedString = NSAttributedString(attachment: attachment!)
-                self.insertAttributedString(attachmentAttributedString, atIndex: loc)
+                    let mutableAttributedString = NSMutableAttributedString()
+                    mutableAttributedString.appendAttributedString(paddingAttributedString)
+                    mutableAttributedString.appendAttributedString(attachmentAttributedString)
+                    mutableAttributedString.appendAttributedString(paddingAttributedString)
+                    attachmentAttributedString = mutableAttributedString.copy() as! NSAttributedString
             }
+            self.insertAttributedString(attachmentAttributedString, atIndex: loc)
         }
     }
     
@@ -144,5 +144,27 @@ extension SwiftyTextStorage {
             attributesRangeMap![rangeString] = attrs
         }
         return attributesRangeMap
+    }
+    
+    public func neighbourFontDescenderWithRange(range: NSRange) -> CGFloat {
+        var fontDescender: CGFloat = 0.0;
+        var neighbourAttributs: [String: AnyObject]? = nil;
+        if range.location >= 1 {
+            neighbourAttributs = self.attributesAtIndex(range.location - 1, effectiveRange: nil)
+        } else if (NSMaxRange(range) < self.length) {
+            neighbourAttributs = self.attributesAtIndex(NSMaxRange(range) , effectiveRange: nil)
+        }
+        
+        if neighbourAttributs != nil {
+            if let neighbourAttachment = neighbourAttributs![NSAttachmentAttributeName] as? SwiftyTextAttachment {
+                fontDescender = neighbourAttachment.fontDescender;
+            } else if neighbourAttributs![NSFontAttributeName] != nil {
+                if let neighbourFont = neighbourAttributs![NSFontAttributeName] as? UIFont{
+                    fontDescender = neighbourFont.descender;
+                }
+            }
+        }
+        
+        return fontDescender;
     }
 }
