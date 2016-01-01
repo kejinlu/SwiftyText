@@ -37,7 +37,6 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
                     self.textStorage.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(17), range: NSMakeRange(0, self.textStorage.length))
                 }
             }
-
         }
     }
     
@@ -53,13 +52,13 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         }
     }
     
-    public var textAlignment: NSTextAlignment {
+    public var textAlignment: NSTextAlignment = .Left{
         didSet {
             self.updateTextParaphStyleWithPropertyName("alignment", value: NSNumber(integer: textAlignment.rawValue))
         }
     }
     
-    public var lineSpacing: CGFloat {
+    public var lineSpacing: CGFloat = 0.0 {
         didSet {
             self.updateTextParaphStyleWithPropertyName("lineSpacing", value: NSNumber(float: Float(lineSpacing)))
         }
@@ -78,7 +77,7 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         }
     }
     
-    public var firstLineHeadIndent:CGFloat {
+    public var firstLineHeadIndent:CGFloat = 0.0{
         didSet {
             self.updateTextParaphStyleWithPropertyName("firstLineHeadIndent", value: NSNumber(float: Float(firstLineHeadIndent)))
         }
@@ -105,7 +104,7 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         }
     }
     
-    public var numberOfLines: Int {
+    public var numberOfLines: Int = 0{
         didSet {
             self.textContainer.maximumNumberOfLines = numberOfLines
             self.layoutManager.textContainerChangedGeometry(self.textContainer)
@@ -113,16 +112,16 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         }
     }
     
-    public private(set) var textContainer: NSTextContainer
-    public var textContainerInset: UIEdgeInsets {
+    public private(set) var textContainer: NSTextContainer = NSTextContainer()
+    public var textContainerInset: UIEdgeInsets = UIEdgeInsetsZero{
         didSet {
             self.textContainer.size = UIEdgeInsetsInsetRect(self.bounds, textContainerInset).size
             self.layoutManager.textContainerChangedGeometry(self.textContainer)
         }
     }
     
-    public private(set) var layoutManager: NSLayoutManager
-    public private(set) var textStorage: SwiftyTextStorage
+    public private(set) var layoutManager: NSLayoutManager =  NSLayoutManager()
+    public private(set) var textStorage: SwiftyTextStorage = SwiftyTextStorage()
     
     public var parser: SwiftyTextParser? {
         didSet {
@@ -134,7 +133,7 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
     
     internal var asyncTextLayer: CALayer?
     internal var asyncTextRenderQueue: dispatch_queue_t?
-    public var drawsTextAsynchronously: Bool {
+    public var drawsTextAsynchronously: Bool = false{
         didSet {
             if drawsTextAsynchronously {
                 if self.asyncTextLayer == nil {
@@ -150,6 +149,7 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
                 }
                 self.asyncTextRenderQueue = nil;
             }
+            self.setNeedsDisplay()
         }
     }
     
@@ -168,32 +168,19 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
     
     
     public var supportedGestures: SwiftyLabelGesture = [.None]
-    internal var singleTapRecognizer: SwiftyLabelTapRecognizer
-    internal var doubleTapRecognizer: SwiftyLabelTapRecognizer
-    internal var longPressRecognizer: SwiftyLabelLongPressRecognizer
+    internal var singleTapRecognizer: SwiftyLabelTapRecognizer = SwiftyLabelTapRecognizer()
+    internal var doubleTapRecognizer: SwiftyLabelTapRecognizer = SwiftyLabelTapRecognizer()
+    internal var longPressRecognizer: SwiftyLabelLongPressRecognizer = SwiftyLabelLongPressRecognizer()
     
     public var delegate: SwiftyLabelDelegate?
     
     // MARK:- Init
     
-    override public init(frame: CGRect) {
-        self.textContainer = NSTextContainer(size: frame.size)
-        self.textContainerInset = UIEdgeInsetsZero
-        self.layoutManager = NSLayoutManager()
+    func commonInit() {
+        self.textContainer.size = frame.size
         self.layoutManager.addTextContainer(self.textContainer)
-        self.textStorage = SwiftyTextStorage()
         self.textStorage.addLayoutManager(self.layoutManager)
-        self.drawsTextAsynchronously = false;
-        self.numberOfLines = 0
-        self.firstLineHeadIndent = 0
-        self.textAlignment = .Left
-        self.lineSpacing = 0
         
-        self.singleTapRecognizer = SwiftyLabelTapRecognizer()
-        self.doubleTapRecognizer = SwiftyLabelTapRecognizer()
-        self.longPressRecognizer = SwiftyLabelLongPressRecognizer()
-        
-        super.init(frame: frame)
         self.contentMode = .Redraw
         self.layoutManager.delegate = self
         
@@ -216,14 +203,27 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         
         self.singleTapRecognizer.requireGestureRecognizerToFail(self.doubleTapRecognizer)
         self.singleTapRecognizer.requireGestureRecognizerToFail(self.longPressRecognizer)
-        
+    }
+    
+    override public init(frame: CGRect) {
+        super.init(frame: frame)
+        self.commonInit()
     }
 
     required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
+        self.commonInit()
     }
     
+    // MARK:- storage 
     
+    public func setLink(link: SwiftyTextLink?, range: NSRange) {
+        self.textStorage.setLink(link, range: range)
+    }
+    
+    public func insertAttachment(attachment: SwiftyTextAttachment, atIndex loc: Int) {
+        self.textStorage.insertAttachment(attachment, atIndex: loc)
+    }
     /**
      Returns the link attribute at a given position, and by reference the range and the glyph rects of the link.
      
@@ -524,16 +524,12 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         return self.proposedSizeWithConstrainedSize(size)
     }
     
-    public override var frame: CGRect{
-        didSet{
-            super.frame = frame
-            if self.drawsTextAsynchronously {
-                CATransaction.begin()
-                CATransaction.setDisableActions(true) //disable implicit animation
-                self.asyncTextLayer?.frame = self.layer.bounds
-                CATransaction.commit()
-            }
-        }
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        CATransaction.begin()
+        CATransaction.setDisableActions(true) //disable implicit animation
+        self.asyncTextLayer?.frame = self.layer.bounds
+        CATransaction.commit()
     }
     
     // MARK:- Layout Manager Delegate
@@ -544,8 +540,11 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
                     var frame = attachement.contentViewFrameInTextContainer!;
                     frame.origin.x += self.textContainerInset.left;
                     frame.origin.y += self.textContainerInset.top;
-                    attachement.contentView!.frame = frame;
-                    self.insertSubview(attachement.contentView!, atIndex: 0)
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        attachement.contentView!.removeFromSuperview()
+                        attachement.contentView!.frame = frame;
+                        self.insertSubview(attachement.contentView!, atIndex: 0)
+                    })
                 }
             }
         }

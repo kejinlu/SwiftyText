@@ -20,7 +20,7 @@ public let SwiftyTextLinkAttributeName: String = "SwiftyTextLink"
  - attributes: Attributes which will be applied to the target text
  - highlightedAttributes: Attributeds applied to the text when highlighted.
  
- - highlightLayerRadius,highlightLayerColor: When highlight, there can be a mask layer over the link, these two properties can be setted to custom that layer
+ - highlightLayerRadius,highlightLayerColor: When highlight, there can be a mask layer over the link, these two properties can be setted to style that layer
  
 */
 public class SwiftyTextLink: NSObject {
@@ -40,7 +40,6 @@ public class SwiftyTextLink: NSObject {
     
     public var userInfo: [String: AnyObject]?
 }
-
 
 public struct SwiftyTextLinkGesture: OptionSetType {
     public let rawValue: UInt

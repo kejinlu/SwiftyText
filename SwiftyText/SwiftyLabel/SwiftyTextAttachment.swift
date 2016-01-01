@@ -97,10 +97,19 @@ public class SwiftyTextAttachment: NSTextAttachment {
     }
 }
 
+
+/**
+ Blank placeholder usded for image padding
+ */
 public class SwiftyTextBlankAttachment: NSTextAttachment {
-    public var width: CGFloat = 0.0 {
-        didSet {
-            self.bounds = CGRectMake(0, 0, width, 1);
+    public var width: CGFloat {
+        get{
+            return CGRectGetWidth(bounds)
+        }
+        
+        set {
+            bounds.size.width = newValue
+            bounds.size.height = 1
         }
     }
 }

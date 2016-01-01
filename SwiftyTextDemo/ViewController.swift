@@ -11,11 +11,15 @@ import SwiftyText
 
 class ViewController: UIViewController, SwiftyLabelDelegate {
 
+    @IBOutlet weak var label: SwiftyLabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor(red: 229/255.0, green: 229/255.0, blue: 229/255.0, alpha: 1)
         
-        let label = SwiftyLabel(frame: CGRectMake(0, 0, 300, 400))
+        //let label = SwiftyLabel(frame: CGRectMake(0, 0, 300, 400))
+        label.frame = CGRectMake(0, 0, 300, 400)
+        label.autoresizingMask = [.None]
         label.center = self.view.center
         label.delegate = self
         label.backgroundColor = UIColor(red: 243/255.0, green: 1, blue: 236/255.0, alpha: 1)
@@ -55,7 +59,7 @@ class ViewController: UIViewController, SwiftyLabelDelegate {
             label.parser = detector
         }
         
-        self.view.addSubview(label)
+        //self.view.addSubview(label)
     }
 
     override func didReceiveMemoryWarning() {
