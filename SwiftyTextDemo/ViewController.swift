@@ -35,7 +35,7 @@ class ViewController: UIViewController, SwiftyLabelDelegate {
         let link = SwiftyTextLink()
         link.URL = NSURL(string: "https://developer.apple.com/swift/")
         link.attributes = [NSForegroundColorAttributeName:UIColor(red: 0, green: 122/255.0, blue: 1.0, alpha: 1.0),NSUnderlineStyleAttributeName:NSUnderlineStyle.StyleSingle.rawValue]
-        label.textStorage.setLink(link, range: NSMakeRange(0, 5))
+        label.setLink(link, range: NSMakeRange(0, 5))
         
         
 
@@ -44,14 +44,14 @@ class ViewController: UIViewController, SwiftyLabelDelegate {
         imageAttachment.image = UIImage(named: "swift")
         imageAttachment.attachmentTextVerticalAlignment = .Center
         imageAttachment.padding = 10.0
-        label.textStorage.insertAttachment(imageAttachment, atIndex: label.textStorage.length - 9)
+        label.insertAttachment(imageAttachment, atIndex: label.attributedText!.length - 9)
         
         let sliderAttachment = SwiftyTextAttachment()
         let slider = UISlider()
         sliderAttachment.contentView = slider;
         sliderAttachment.padding = 3.0
         sliderAttachment.attachmentTextVerticalAlignment = .Center
-        label.textStorage.insertAttachment(sliderAttachment, atIndex: 8)
+        label.insertAttachment(sliderAttachment, atIndex: 8)
 
         let detector = SwiftyTextDetector.detectorWithType([.URL,.Address])
         detector!.linkGestures = [.Tap, .LongPress]
@@ -60,6 +60,12 @@ class ViewController: UIViewController, SwiftyLabelDelegate {
         }
         
         //self.view.addSubview(label)
+        
+        let label1 = UILabel()
+        let xxx = NSAttributedString(string: "haha")
+        label1.attributedText = xxx
+        let yyy = label1.attributedText!
+        label1.text = nil
     }
 
     override func didReceiveMemoryWarning() {

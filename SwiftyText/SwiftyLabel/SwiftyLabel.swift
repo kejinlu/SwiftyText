@@ -49,8 +49,7 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
         }
     }
     
-    /** Default value: NSLineBreakMode.ByWordWrapping
-     *The line break mode defines the behavior of the last line of the label.
+    /** Default value: NSLineBreakMode.ByWordWrapping, The line break mode defines the behavior of the last line of the label.
      */
     public var lineBreakMode: NSLineBreakMode {
         get {
@@ -70,13 +69,22 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
         }
     }
     
+    /** Hold the content for the text or attributedText property
+     */
+    internal var content: AnyObject?
+    
     public var text: String? {
         get {
-            return self.textStorage.string
+            if self.content != nil {
+                return self.textStorage.string
+            } else {
+                return nil
+            }
         }
         
         set {
             let range = self.textStorage.entireRange()
+            self.content = newValue
             if newValue != nil {
                 self.textStorage.replaceCharactersInRange(range, withString: newValue!)
                 self.updateTextParaphStyle()
@@ -95,11 +103,16 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
      */
     public var attributedText: NSAttributedString? {
         get {
-            let range = self.textStorage.entireRange()
-            return self.textStorage.attributedSubstringFromRange(range)
+            if self.content != nil {
+                let range = self.textStorage.entireRange()
+                return self.textStorage.attributedSubstringFromRange(range)
+            } else {
+                return nil
+            }
         }
         
         set {
+            self.content = newValue
             let range = self.textStorage.entireRange()
             if newValue != nil {
                 self.textStorage.replaceCharactersInRange(range, withAttributedString: newValue!)
@@ -124,7 +137,7 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
         }
     }
     
-    public private(set) var textContainer = NSTextContainer()
+    internal var textContainer = NSTextContainer()
     public var textContainerInset = UIEdgeInsetsZero{
         didSet {
             self.textContainer.size = UIEdgeInsetsInsetRect(self.bounds, textContainerInset).size
@@ -133,8 +146,21 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
         }
     }
     
-    public private(set) var layoutManager = NSLayoutManager()
-    public private(set) var textStorage = SwiftyTextStorage()
+    /** The exclusionPaths for internal textContainer, so the exclusionPaths should be relatived to the text container's origin
+     */
+    public var exclusionPaths: [UIBezierPath] {
+        get {
+            return self.textContainer.exclusionPaths
+        }
+        
+        set {
+            self.textContainer.exclusionPaths = exclusionPaths
+            self.setNeedsDisplay()
+        }
+    }
+    
+    internal var layoutManager = NSLayoutManager()
+    internal var textStorage = SwiftyTextStorage()
     
     public var parser: SwiftyTextParser? {
         didSet {
