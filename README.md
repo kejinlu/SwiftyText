@@ -1,9 +1,10 @@
-<img src="/Assets/swifty-text-logo.png" height="80"/>  <a href="Docs/README-en.md">English</a>
+<img src="/Assets/swifty-text-logo.png" height="80"/>  
 
 ----
 
 [![Build Status](https://travis-ci.org/kejinlu/SwiftyText.svg?branch=master)](https://travis-ci.org/kejinlu/SwiftyText)
  
+[English](Docs/README-en.md)
 ### 目标及特性
 - 链接属性(Link Attribute)，设置后，对应区域的文本便支持点击效果，单击以及长按都有对应的delegate方法
 - 增强的Attachment，支持基于的附件，支持和文本垂直方向的各种对其方式：靠底对齐，居中对齐，靠顶对齐，根据文本高度进行缩放
