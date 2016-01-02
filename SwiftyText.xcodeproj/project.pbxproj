@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		A35BAC191C1AC705004FFABC /* SwiftyText.h in Headers */ = {isa = PBXBuildFile; fileRef = A35BAC181C1AC705004FFABC /* SwiftyText.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A35BAC201C1AC705004FFABC /* SwiftyText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A35BAC151C1AC705004FFABC /* SwiftyText.framework */; };
-		A35BAC251C1AC705004FFABC /* SwiftyTextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35BAC241C1AC705004FFABC /* SwiftyTextTests.swift */; };
 		A35BAC4E1C1AC76A004FFABC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35BAC4D1C1AC76A004FFABC /* AppDelegate.swift */; };
 		A35BAC501C1AC76A004FFABC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35BAC4F1C1AC76A004FFABC /* ViewController.swift */; };
 		A35BAC531C1AC76A004FFABC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A35BAC511C1AC76A004FFABC /* Main.storyboard */; };
@@ -29,13 +27,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		A35BAC211C1AC705004FFABC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A35BAC0C1C1AC705004FFABC /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = A35BAC141C1AC705004FFABC;
-			remoteInfo = SwiftyText;
-		};
 		A35BAC6C1C1AC871004FFABC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A35BAC0C1C1AC705004FFABC /* Project object */;
@@ -49,9 +40,6 @@
 		A35BAC151C1AC705004FFABC /* SwiftyText.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftyText.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A35BAC181C1AC705004FFABC /* SwiftyText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftyText.h; sourceTree = "<group>"; };
 		A35BAC1A1C1AC705004FFABC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Info.plist; sourceTree = "<group>"; };
-		A35BAC1F1C1AC705004FFABC /* SwiftyTextTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftyTextTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		A35BAC241C1AC705004FFABC /* SwiftyTextTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftyTextTests.swift; sourceTree = "<group>"; };
-		A35BAC261C1AC705004FFABC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A35BAC4B1C1AC76A004FFABC /* SwiftyTextDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftyTextDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A35BAC4D1C1AC76A004FFABC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A35BAC4F1C1AC76A004FFABC /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -79,14 +67,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A35BAC1C1C1AC705004FFABC /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A35BAC201C1AC705004FFABC /* SwiftyText.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		A35BAC481C1AC76A004FFABC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -102,7 +82,6 @@
 			isa = PBXGroup;
 			children = (
 				A35BAC171C1AC705004FFABC /* SwiftyText */,
-				A35BAC231C1AC705004FFABC /* SwiftyTextTests */,
 				A35BAC4C1C1AC76A004FFABC /* SwiftyTextDemo */,
 				A35BAC161C1AC705004FFABC /* Products */,
 			);
@@ -112,7 +91,6 @@
 			isa = PBXGroup;
 			children = (
 				A35BAC151C1AC705004FFABC /* SwiftyText.framework */,
-				A35BAC1F1C1AC705004FFABC /* SwiftyTextTests.xctest */,
 				A35BAC4B1C1AC76A004FFABC /* SwiftyTextDemo.app */,
 			);
 			name = Products;
@@ -125,15 +103,6 @@
 				A35BAC181C1AC705004FFABC /* SwiftyText.h */,
 			);
 			path = SwiftyText;
-			sourceTree = "<group>";
-		};
-		A35BAC231C1AC705004FFABC /* SwiftyTextTests */ = {
-			isa = PBXGroup;
-			children = (
-				A35BAC241C1AC705004FFABC /* SwiftyTextTests.swift */,
-				A35BAC261C1AC705004FFABC /* Info.plist */,
-			);
-			path = SwiftyTextTests;
 			sourceTree = "<group>";
 		};
 		A35BAC4C1C1AC76A004FFABC /* SwiftyTextDemo */ = {
@@ -199,24 +168,6 @@
 			productReference = A35BAC151C1AC705004FFABC /* SwiftyText.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		A35BAC1E1C1AC705004FFABC /* SwiftyTextTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A35BAC2C1C1AC705004FFABC /* Build configuration list for PBXNativeTarget "SwiftyTextTests" */;
-			buildPhases = (
-				A35BAC1B1C1AC705004FFABC /* Sources */,
-				A35BAC1C1C1AC705004FFABC /* Frameworks */,
-				A35BAC1D1C1AC705004FFABC /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				A35BAC221C1AC705004FFABC /* PBXTargetDependency */,
-			);
-			name = SwiftyTextTests;
-			productName = SwiftyTextTests;
-			productReference = A35BAC1F1C1AC705004FFABC /* SwiftyTextTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		A35BAC4A1C1AC76A004FFABC /* SwiftyTextDemo */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A35BAC5A1C1AC76A004FFABC /* Build configuration list for PBXNativeTarget "SwiftyTextDemo" */;
@@ -247,9 +198,6 @@
 					A35BAC141C1AC705004FFABC = {
 						CreatedOnToolsVersion = 7.0.1;
 					};
-					A35BAC1E1C1AC705004FFABC = {
-						CreatedOnToolsVersion = 7.0.1;
-					};
 					A35BAC4A1C1AC76A004FFABC = {
 						CreatedOnToolsVersion = 7.0.1;
 					};
@@ -269,7 +217,6 @@
 			projectRoot = "";
 			targets = (
 				A35BAC141C1AC705004FFABC /* SwiftyText */,
-				A35BAC1E1C1AC705004FFABC /* SwiftyTextTests */,
 				A35BAC4A1C1AC76A004FFABC /* SwiftyTextDemo */,
 			);
 		};
@@ -277,13 +224,6 @@
 
 /* Begin PBXResourcesBuildPhase section */
 		A35BAC131C1AC705004FFABC /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A35BAC1D1C1AC705004FFABC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -320,14 +260,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A35BAC1B1C1AC705004FFABC /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A35BAC251C1AC705004FFABC /* SwiftyTextTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		A35BAC471C1AC76A004FFABC /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -340,11 +272,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		A35BAC221C1AC705004FFABC /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = A35BAC141C1AC705004FFABC /* SwiftyText */;
-			targetProxy = A35BAC211C1AC705004FFABC /* PBXContainerItemProxy */;
-		};
 		A35BAC6D1C1AC871004FFABC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = A35BAC141C1AC705004FFABC /* SwiftyText */;
@@ -493,26 +420,6 @@
 			};
 			name = Release;
 		};
-		A35BAC2D1C1AC705004FFABC /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = SwiftyTextTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.geeklu.SwiftyTextTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		A35BAC2E1C1AC705004FFABC /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = SwiftyTextTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.geeklu.SwiftyTextTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 		A35BAC5B1C1AC76A004FFABC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -552,15 +459,6 @@
 			buildConfigurations = (
 				A35BAC2A1C1AC705004FFABC /* Debug */,
 				A35BAC2B1C1AC705004FFABC /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A35BAC2C1C1AC705004FFABC /* Build configuration list for PBXNativeTarget "SwiftyTextTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A35BAC2D1C1AC705004FFABC /* Debug */,
-				A35BAC2E1C1AC705004FFABC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
