@@ -16,7 +16,7 @@ class SwiftyLabelLongPressRecognizer: UIGestureRecognizer {
     
     internal var longPressTimer: NSTimer?
     
-    internal func isTouchCloseToInitialPoint(touch: UITouch) -> Bool{
+    internal func isTouchCloseToInitialPoint(touch: UITouch) -> Bool {
         let point = touch.locationInView(self.view)
         let xDistance = self.initialPoint.x - point.x
         let yDistance = self.initialPoint.y - point.y
@@ -26,7 +26,7 @@ class SwiftyLabelLongPressRecognizer: UIGestureRecognizer {
         return isClose
     }
     
-    internal func longPressed(timer: NSTimer){
+    internal func longPressed(timer: NSTimer) {
         timer.invalidate()
         self.state = .Ended
     }

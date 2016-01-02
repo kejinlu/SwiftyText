@@ -18,7 +18,7 @@ class SwiftyLabelTapRecognizer: UIGestureRecognizer {
         timeoutTimer = nil
     }
     
-    internal func handleTimeout(timer: NSTimer){
+    internal func handleTimeout(timer: NSTimer) {
         timer.invalidate()
         self.state = .Cancelled
     }

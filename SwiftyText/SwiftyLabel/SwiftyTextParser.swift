@@ -12,7 +12,7 @@ public protocol SwiftyTextParser {
     func parseText(attributedText: NSMutableAttributedString)
 }
 
-public class SwiftyTextSuperParser:NSObject, SwiftyTextParser{
+public class SwiftyTextSuperParser: NSObject, SwiftyTextParser {
     
     public init(parsers: [SwiftyTextParser]) {
         self.subParsers = parsers

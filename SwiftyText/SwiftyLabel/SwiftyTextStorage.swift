@@ -9,8 +9,11 @@
 import Foundation
 import UIKit
 
-public class SwiftyTextStorage : NSTextStorage{
+public class SwiftyTextStorage: NSTextStorage {
+    
+    // MARK:- Properties
     internal var storage: NSMutableAttributedString
+    
     internal var viewAttachments:[SwiftyTextAttachment] {
         var attachments = [SwiftyTextAttachment]()
         self.enumerateAttribute(NSAttachmentAttributeName, inRange: NSMakeRange(0, self.length), options:[]) { (value: AnyObject?, range: NSRange, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
@@ -24,21 +27,7 @@ public class SwiftyTextStorage : NSTextStorage{
         return attachments
     }
     
-    // MARK:- Init
-    public override init(string str: String, attributes attrs: [String : AnyObject]?){
-        self.storage = NSMutableAttributedString(string: str, attributes: attrs)
-        super.init()
-    }
-    
-    convenience override init(){
-        self.init(string: "", attributes: nil)
-    }
-
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    // MARK:- Private method
+    // MARK:- Private methods
     private func isValidRange(range: NSRange) -> Bool {
         var isValid = false
         let fullRange = NSMakeRange(0, self.length)
@@ -48,9 +37,22 @@ public class SwiftyTextStorage : NSTextStorage{
         return isValid
     }
     
-    // MARK:- Convenience attribute setting method
+    // MARK:- Init
+    public override init(string str: String, attributes attrs: [String : AnyObject]?) {
+        self.storage = NSMutableAttributedString(string: str, attributes: attrs)
+        super.init()
+    }
     
-    public func setFont(font: UIFont?, range:NSRange){
+    convenience override init() {
+        self.init(string: "", attributes: nil)
+    }
+
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK:- Convenience attribute setting method
+    public func setFont(font: UIFont?, range:NSRange) {
         if self.isValidRange(range) {
             if font != nil {
                 self.addAttribute(NSFontAttributeName, value: font!, range: range)
@@ -83,14 +85,11 @@ public class SwiftyTextStorage : NSTextStorage{
         }
     }
     
-    /*
-    if attachment's verticalOffset is nil, it will be assigned to the descender of the font of the neighbour
-    */
     public func insertAttachment(attachment:SwiftyTextAttachment, atIndex loc:Int) {
         if loc <= self.length {
             attachment.fontDescender = self.neighbourFontDescenderWithRange(NSMakeRange(loc, 0))
             var attachmentAttributedString = NSAttributedString(attachment: attachment)
-            //使用空白Attachment曲线解决图片padding的问题
+            //Use blank attachment for real image attachment padding
             if attachment.image != nil &&
                 attachment.contentView == nil &&
                 attachment.padding > 0 {
@@ -135,8 +134,14 @@ public class SwiftyTextStorage : NSTextStorage{
 }
 
 
+
 extension SwiftyTextStorage {
-    public func attributesRangeMapInRange(textRange: NSRange) -> [String: [String: AnyObject]]?{
+    public func entireRange() -> NSRange {
+        let range = NSMakeRange(0, self.length)
+        return range
+    }
+    
+    public func attributesRangeMapInRange(textRange: NSRange) -> [String: [String: AnyObject]]? {
         
         var attributesRangeMap:[String: [String: AnyObject]]? = [String: [String: AnyObject]]()
         self.enumerateAttributesInRange(textRange, options: NSAttributedStringEnumerationOptions()) { (attrs, range, stop) -> Void in
@@ -164,7 +169,6 @@ extension SwiftyTextStorage {
                 }
             }
         }
-        
         return fontDescender;
     }
 }

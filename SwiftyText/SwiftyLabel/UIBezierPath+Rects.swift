@@ -8,8 +8,8 @@
 
 import Foundation
 
-extension UIBezierPath{
-    class func bezierPathWithGlyphRects(rects: [CGRect], radius: CGFloat) -> UIBezierPath{
+extension UIBezierPath {
+    class func bezierPathWithGlyphRects(rects: [CGRect], radius: CGFloat) -> UIBezierPath {
         let path = UIBezierPath()
         
         let rectCount = rects.count

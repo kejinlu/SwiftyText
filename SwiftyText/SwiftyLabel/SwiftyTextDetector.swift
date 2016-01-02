@@ -8,6 +8,8 @@
 
 import Foundation
 
+internal let SwiftyTextDetectorResultAttributeName: String = "SwiftyTextDetectorResult"
+
 public struct SwiftyTextDetectorType: OptionSetType {
     public let rawValue: UInt
     public init(rawValue: UInt){ self.rawValue = rawValue}

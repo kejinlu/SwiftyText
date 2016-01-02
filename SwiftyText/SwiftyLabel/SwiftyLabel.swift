@@ -8,22 +8,7 @@
 
 import Foundation
 
-internal let SwiftyTextDetectorResultAttributeName: String = "SwiftyTextDetectorResult"
-
-/**
- The gesture supported by SwiftyLabel itself
- */
-public struct SwiftyLabelGesture: OptionSetType {
-    public let rawValue: UInt
-    public init(rawValue: UInt){ self.rawValue = rawValue}
-    
-    public static let None = SwiftyLabelGesture(rawValue: 0)
-    public static let Tap = SwiftyLabelGesture(rawValue: 1)
-    public static let LongPress = SwiftyLabelGesture(rawValue: 1 << 1)
-    public static let DoubleTap = SwiftyLabelGesture(rawValue: 1 << 2)
-}
-
-public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerDelegate {
+public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDelegate {
     
     // MARK:- Properties
     
@@ -31,10 +16,10 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         didSet {
             if self.text != nil {
                 if font != nil {
-                    self.textStorage.addAttribute(NSFontAttributeName, value: font!, range: NSMakeRange(0, self.textStorage.length))
+                    self.textStorage.addAttribute(NSFontAttributeName, value: font!, range: self.textStorage.entireRange())
                 } else {
                     //if set as nil, use default
-                    self.textStorage.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(17), range: NSMakeRange(0, self.textStorage.length))
+                    self.textStorage.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(17), range: self.textStorage.entireRange())
                 }
             }
         }
@@ -44,9 +29,9 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         didSet {
             if self.text != nil {
                 if textColor != nil {
-                    self.textStorage.addAttribute(NSForegroundColorAttributeName, value: textColor!, range: NSMakeRange(0, self.textStorage.length))
+                    self.textStorage.addAttribute(NSForegroundColorAttributeName, value: textColor!, range: self.textStorage.entireRange())
                 } else {
-                    self.textStorage.addAttribute(NSForegroundColorAttributeName, value: UIColor.blackColor(), range: NSMakeRange(0, self.textStorage.length))
+                    self.textStorage.addAttribute(NSForegroundColorAttributeName, value: UIColor.blackColor(), range: self.textStorage.entireRange())
                 }
             }
         }
@@ -64,7 +49,9 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         }
     }
     
-    /// Default value: NSLineBreakMode.ByWordWrapping  The line break mode defines the behavior of the last line of the label.
+    /** Default value: NSLineBreakMode.ByWordWrapping
+     *The line break mode defines the behavior of the last line of the label.
+     */
     public var lineBreakMode: NSLineBreakMode {
         get {
             return self.textContainer.lineBreakMode
@@ -77,51 +64,77 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
         }
     }
     
-    public var firstLineHeadIndent:CGFloat = 0.0{
+    public var firstLineHeadIndent:CGFloat = 0.0 {
         didSet {
             self.updateTextParaphStyleWithPropertyName("firstLineHeadIndent", value: NSNumber(float: Float(firstLineHeadIndent)))
         }
     }
     
     public var text: String? {
-        didSet {
-            let range = NSMakeRange(0, self.textStorage.string.characters.count)
-            self.textStorage.replaceCharactersInRange(range, withString: text!)
-            self.updateTextParaphStyle()
-            self.needsParse = true
-            self.setNeedsDisplay()
+        get {
+            return self.textStorage.string
         }
-    }
-    
+        
+        set {
+            let range = self.textStorage.entireRange()
+            if newValue != nil {
+                self.textStorage.replaceCharactersInRange(range, withString: newValue!)
+                self.updateTextParaphStyle()
+                self.needsParse = true
+            } else {
+                self.textStorage.replaceCharactersInRange(range, withString: "")
+            }
 
-    ///the underlying attributed string drawn by the label, if set, the label ignores the properties above.
-    public var attributedText: NSAttributedString? {
-        didSet {
-            let range = NSMakeRange(0, self.textStorage.length)
-            self.textStorage.replaceCharactersInRange(range, withAttributedString: attributedText!)
-            self.needsParse = true
             self.setNeedsDisplay()
         }
     }
     
-    public var numberOfLines: Int = 0{
-        didSet {
-            self.textContainer.maximumNumberOfLines = numberOfLines
+    /**the underlying attributed string drawn by the label, 
+     if set, the label ignores the properties above.
+     In addition, assigning a new a value updates the values in the font, textColor, and other style-related properties so that they reflect the style information starting at location 0 in the attributed string.
+     */
+    public var attributedText: NSAttributedString? {
+        get {
+            let range = self.textStorage.entireRange()
+            return self.textStorage.attributedSubstringFromRange(range)
+        }
+        
+        set {
+            let range = self.textStorage.entireRange()
+            if newValue != nil {
+                self.textStorage.replaceCharactersInRange(range, withAttributedString: newValue!)
+                self.needsParse = true
+            } else {
+                self.textStorage.replaceCharactersInRange(range, withString: "")
+            }
+
+            self.setNeedsDisplay()
+        }
+    }
+    
+    public var numberOfLines: Int {
+        get {
+            return self.textContainer.maximumNumberOfLines
+        }
+        
+        set {
+            self.textContainer.maximumNumberOfLines = newValue
             self.layoutManager.textContainerChangedGeometry(self.textContainer)
             self.setNeedsDisplay()
         }
     }
     
-    public private(set) var textContainer: NSTextContainer = NSTextContainer()
-    public var textContainerInset: UIEdgeInsets = UIEdgeInsetsZero{
+    public private(set) var textContainer = NSTextContainer()
+    public var textContainerInset = UIEdgeInsetsZero{
         didSet {
             self.textContainer.size = UIEdgeInsetsInsetRect(self.bounds, textContainerInset).size
             self.layoutManager.textContainerChangedGeometry(self.textContainer)
+            self.setNeedsDisplay()
         }
     }
     
-    public private(set) var layoutManager: NSLayoutManager =  NSLayoutManager()
-    public private(set) var textStorage: SwiftyTextStorage = SwiftyTextStorage()
+    public private(set) var layoutManager = NSLayoutManager()
+    public private(set) var textStorage = SwiftyTextStorage()
     
     public var parser: SwiftyTextParser? {
         didSet {
@@ -133,7 +146,7 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
     
     internal var asyncTextLayer: CALayer?
     internal var asyncTextRenderQueue: dispatch_queue_t?
-    public var drawsTextAsynchronously: Bool = false{
+    public var drawsTextAsynchronously: Bool = false {
         didSet {
             if drawsTextAsynchronously {
                 if self.asyncTextLayer == nil {
@@ -156,21 +169,20 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
     /**
      When the touch is enabled on SwiftyLabel itself, you can set the highlightLayerColor for the label when touch.
      
-     - important: highlightLayerColor should apply the alpha component if you want.
+     - important: highlightLayerColor should apply the alpha component.
      */
     public var highlightLayerColor: UIColor?;
     
     internal var touchHighlightLayer: CALayer?
-    internal var touchInfo: SwiftyLabelTouchInfo = SwiftyLabelTouchInfo()
+    internal var touchInfo = SwiftyLabelTouchInfo()
     
     //[rangeString: [attributeName: attribute]]
     internal var touchAttributesMap: [String: [String: AnyObject]]?
     
-    
     public var supportedGestures: SwiftyLabelGesture = [.None]
-    internal var singleTapRecognizer: SwiftyLabelTapRecognizer = SwiftyLabelTapRecognizer()
-    internal var doubleTapRecognizer: SwiftyLabelTapRecognizer = SwiftyLabelTapRecognizer()
-    internal var longPressRecognizer: SwiftyLabelLongPressRecognizer = SwiftyLabelLongPressRecognizer()
+    internal var singleTapRecognizer = SwiftyLabelTapRecognizer()
+    internal var doubleTapRecognizer = SwiftyLabelTapRecognizer()
+    internal var longPressRecognizer = SwiftyLabelLongPressRecognizer()
     
     public var delegate: SwiftyLabelDelegate?
     
@@ -414,7 +426,7 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
             }
             
             mutableParagraphStyle?.setValue(value, forKey: name)
-            self.textStorage.addAttribute(NSParagraphStyleAttributeName, value: mutableParagraphStyle!.copy(), range: NSMakeRange(0, self.textStorage.length))
+            self.textStorage.addAttribute(NSParagraphStyleAttributeName, value: mutableParagraphStyle!.copy(), range: self.textStorage.entireRange())
             self.setNeedsDisplay()
         }
     }
@@ -551,6 +563,23 @@ public class SwiftyLabel : UIView, NSLayoutManagerDelegate, UIGestureRecognizerD
     }
 }
 
+
+
+/**
+ The gesture supported by SwiftyLabel itself
+ */
+public struct SwiftyLabelGesture: OptionSetType {
+    public let rawValue: UInt
+    public init(rawValue: UInt){ self.rawValue = rawValue}
+    
+    public static let None = SwiftyLabelGesture(rawValue: 0)
+    public static let Tap = SwiftyLabelGesture(rawValue: 1)
+    public static let LongPress = SwiftyLabelGesture(rawValue: 1 << 1)
+    public static let DoubleTap = SwiftyLabelGesture(rawValue: 1 << 2)
+}
+
+
+
 struct SwiftyLabelTouchInfo{
     var touch: UITouch?
     
@@ -583,6 +612,7 @@ struct SwiftyLabelTouchInfo{
 }
 
 
+
 public protocol SwiftyLabelDelegate: NSObjectProtocol {
     
     /// Delegate methods for the touch of link
@@ -595,6 +625,8 @@ public protocol SwiftyLabelDelegate: NSObjectProtocol {
     func swiftyLabelDidDoubleTap(SwiftyLabel: SwiftyLabel)
 }
 
+
+
 //Default implementations for SwiftyLabelDelegate
 public extension SwiftyLabelDelegate {
     func swiftyLabel(swiftyLabel: SwiftyLabel, didTapWithTextLink link: SwiftyTextLink, range: NSRange){}
@@ -605,11 +637,15 @@ public extension SwiftyLabelDelegate {
     func swiftyLabelDidDoubleTap(swiftyLabel: SwiftyLabel){}
 }
 
+
+
 extension CGSize {
     public func insetsWith(insets: UIEdgeInsets) -> CGSize{
         return CGSizeMake(self.width - insets.left - insets.right, self.height - insets.top - insets.bottom)
     }
 }
+
+
 
 extension CGPoint {
     public func isInRects(rects: [CGRect]) -> Bool{
