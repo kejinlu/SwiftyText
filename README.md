@@ -1,10 +1,8 @@
-<img src="/Assets/swifty-text-logo.png" height="80"/>
+<img src="/Assets/swifty-text-logo.png" height="80"/>  <a href="Docs/README-en.md">English</a>
 
 ----
 
 [![Build Status](https://travis-ci.org/kejinlu/SwiftyText.svg?branch=master)](https://travis-ci.org/kejinlu/SwiftyText)
-
- <a href="Docs/README-en.md">English</a>
  
 ### 目标及特性
 - 链接属性(Link Attribute)，设置后，对应区域的文本便支持点击效果，单击以及长按都有对应的delegate方法
