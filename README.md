@@ -5,12 +5,23 @@
 [![Build Status](https://travis-ci.org/kejinlu/SwiftyText.svg?branch=master)](https://travis-ci.org/kejinlu/SwiftyText)
  
 [English](Docs/README-en.md)
+
 ### 目标及特性
-- 链接属性(Link Attribute)，设置后，对应区域的文本便支持点击效果，单击以及长按都有对应的delegate方法
-- 增强的Attachment，支持基于的附件，支持和文本垂直方向的各种对其方式：靠底对齐，居中对齐，靠顶对齐，根据文本高度进行缩放
-- Text Detectors，设置后完成文本模式的识别和文本属性的自动设置，支持自动将识别结果加上link属性，比如识别文本中的所有URL链接，变成可以点击的
-- 文本支持异步渲染，提升用户体验
-- Accessibility，支持Voice Over便于盲人使用
+- **链接属性(Link Attribute)**  设置后，对应区域的文本便支持点击效果，单击以及长按都有对应的delegate方法
+- **手势自定义**  Link的手势支持点击(Tap)以及长按(LongPress), SwiftyLabel自身支持三种手势，点击，双击以及长按， 手势的触发事件都可以通过delegate方法进行处理
+- **增强的Attachment**  支持基于View的附件，支持和文本垂直方向的各种对其方式：靠底对齐，居中对齐，靠顶对齐，根据文本高度进行缩放
+- **Text Parser**  设置后完成文本模式的识别和文本属性的自动设置，支持自动将识别结果加上link属性，比如识别文本中的所有URL链接，变成可以点击的
+- **文本异步渲染**，提升用户体验
+- **Accessibility**，支持Voice Over便于盲人使用
+
+### 知识点
+如果你想通过阅读源码来学习iOS相关的编程知识，那么通过本项目你可以学到如下一些知识点：
+
+- 如何直接通过TextKit来渲染界面 
+- 通过CAShapeLayer来实现一些特殊形状的layer
+- 如何实现自定义的手势识别器(Gesture Recognizer)，以及多个手势识别器之间如何协同
+- 如果通过继承NSTextAttachment并覆盖attachmentBoundsForTextContainer方法来实现attachment的自定义的垂直对齐方式
+- 自定义界面控件如何实现Voice Over特性
 
 ### 要求
 - iOS 8.0+

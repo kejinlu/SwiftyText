@@ -573,7 +573,7 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     // MARK:- Layout Manager Delegate
     public func layoutManager(layoutManager: NSLayoutManager, didCompleteLayoutForTextContainer textContainer: NSTextContainer?, atEnd layoutFinishedFlag: Bool) {
         if (layoutFinishedFlag) {
-            for attachement in self.textStorage.viewAttachments {
+            for attachement in self.textStorage.viewAttachments() {
                 if (attachement.contentView != nil) {
                     var frame = attachement.contentViewFrameInTextContainer!;
                     frame.origin.x += self.textContainerInset.left;
@@ -586,6 +586,45 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
                 }
             }
         }
+    }
+    
+    
+    // MARK:- Accessibility
+    
+    internal func updateAccessibleElements() {
+        self.isAccessibilityElement = false
+        var elements = [UIAccessibilityElement]()
+        
+        let textElement = UIAccessibilityElement(accessibilityContainer: self)
+        textElement.accessibilityValue = self.text
+        textElement.accessibilityTraits = UIAccessibilityTraitStaticText
+        textElement.accessibilityFrame = UIAccessibilityConvertFrameToScreenCoordinates(self.bounds,self)
+        
+        let languageID = NSBundle.mainBundle().preferredLocalizations.first
+        if languageID == "zh_CN" || languageID == "zh_TW" {
+            textElement.accessibilityLabel = "当前是一段文本，内含链接，向右以选择链接"
+        } else {
+            textElement.accessibilityLabel = "This is a text that contains link, slide right to select link"
+        }
+        elements.append(textElement)
+        
+        self.textStorage.enumerateAttribute(SwiftyTextLinkAttributeName, inRange: self.textStorage.entireRange(), options:[]) { (value: AnyObject?, range: NSRange, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
+            if value != nil && value is SwiftyTextLink {
+                let linkElement = UIAccessibilityElement(accessibilityContainer: self)
+                let glyphRange = self.layoutManager.glyphRangeForCharacterRange(range, actualCharacterRange: nil)
+                var boundingRect = self.layoutManager.boundingRectForGlyphRange(glyphRange, inTextContainer: self.textContainer)
+                boundingRect.origin.x += self.textContainerInset.left
+                boundingRect.origin.y += self.textContainerInset.top
+                let accessibilityFrame = UIAccessibilityConvertFrameToScreenCoordinates(boundingRect, self)
+                linkElement.accessibilityFrame = accessibilityFrame
+                linkElement.accessibilityValue = (self.text! as NSString).substringWithRange(range)
+                linkElement.accessibilityTraits = UIAccessibilityTraitLink
+                elements.append(linkElement)
+            }
+        }
+        self.accessibilityElements = elements
+        
+        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil)
     }
 }
 

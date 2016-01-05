@@ -14,19 +14,6 @@ public class SwiftyTextStorage: NSTextStorage {
     // MARK:- Properties
     internal var storage: NSMutableAttributedString
     
-    internal var viewAttachments:[SwiftyTextAttachment] {
-        var attachments = [SwiftyTextAttachment]()
-        self.enumerateAttribute(NSAttachmentAttributeName, inRange: NSMakeRange(0, self.length), options:[]) { (value: AnyObject?, range: NSRange, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
-            if value != nil && value is SwiftyTextAttachment {
-                let attachment = value as! SwiftyTextAttachment
-                if attachment.contentView != nil {
-                    attachments.append(attachment)
-                }
-            }
-        }
-        return attachments
-    }
-    
     // MARK:- Private methods
     private func isValidRange(range: NSRange) -> Bool {
         var isValid = false
@@ -107,6 +94,20 @@ public class SwiftyTextStorage: NSTextStorage {
         }
     }
     
+    // MARK:- Special Access
+    internal func viewAttachments() -> [SwiftyTextAttachment] {
+        var attachments = [SwiftyTextAttachment]()
+        self.enumerateAttribute(NSAttachmentAttributeName, inRange: self.entireRange(), options:[]) { (value: AnyObject?, range: NSRange, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
+            if value != nil && value is SwiftyTextAttachment {
+                let attachment = value as! SwiftyTextAttachment
+                if attachment.contentView != nil {
+                    attachments.append(attachment)
+                }
+            }
+        }
+        return attachments
+    }
+        
     // MARK:- NSMutableAttributedString&NSAttributedString primitives
     
     public override var string: String {

@@ -60,12 +60,6 @@ class ViewController: UIViewController, SwiftyLabelDelegate {
         }
         
         //self.view.addSubview(label)
-        
-        let label1 = UILabel()
-        let xxx = NSAttributedString(string: "haha")
-        label1.attributedText = xxx
-        let yyy = label1.attributedText!
-        label1.text = nil
     }
 
     override func didReceiveMemoryWarning() {
