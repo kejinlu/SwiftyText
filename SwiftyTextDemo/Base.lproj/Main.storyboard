@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view autoresizesSubviews="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Cxc-nP-U6V" customClass="SwiftyLabel" customModule="SwiftyText">
-                                <rect key="frame" x="5" y="34" width="128" height="150"/>
+                                <rect key="frame" x="5" y="34" width="378" height="420"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
@@ -29,7 +29,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="300" y="352.81690140845069"/>
+            <point key="canvasLocation" x="300" y="352"/>
         </scene>
     </scenes>
 </document>

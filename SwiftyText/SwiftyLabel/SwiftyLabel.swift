@@ -241,6 +241,9 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
         
         self.singleTapRecognizer.requireGestureRecognizerToFail(self.doubleTapRecognizer)
         self.singleTapRecognizer.requireGestureRecognizerToFail(self.longPressRecognizer)
+        
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "voiceOverStatusChanged", name: UIAccessibilityVoiceOverStatusChanged, object: nil)
     }
     
     override public init(frame: CGRect) {
@@ -521,6 +524,8 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
                     CATransaction.setDisableActions(true) //disable implicit animation
                     self.asyncTextLayer!.contents = image.CGImage
                     CATransaction.commit()
+                    
+                    self.updateAccessibleElements()
                 })
             })
         } else {
@@ -540,6 +545,8 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
             let textOrigin:CGPoint = textRect.origin
             self.layoutManager.drawBackgroundForGlyphRange(range, atPoint: textOrigin)
             self.layoutManager.drawGlyphsForGlyphRange(range, atPoint: textOrigin)
+            
+            self.updateAccessibleElements()
         }
     }
     
@@ -592,9 +599,16 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     // MARK:- Accessibility
     
     internal func updateAccessibleElements() {
-        self.isAccessibilityElement = false
-        var elements = [UIAccessibilityElement]()
+        guard UIAccessibilityIsVoiceOverRunning() else {
+            self.accessibilityElements = nil
+            return
+        }
         
+        self.isAccessibilityElement = false
+        var elements = [AnyObject]()
+        
+        
+        // Text element itself
         let textElement = UIAccessibilityElement(accessibilityContainer: self)
         textElement.accessibilityValue = self.text
         textElement.accessibilityTraits = UIAccessibilityTraitStaticText
@@ -604,30 +618,40 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
         if languageID == "zh_CN" || languageID == "zh_TW" {
             textElement.accessibilityLabel = "当前是一段文本，内含链接，向右以选择链接"
         } else {
-            textElement.accessibilityLabel = "This is a text that contains link, slide right to select link"
+            textElement.accessibilityLabel = "This is a text that contains links, slide right to select link"
         }
         elements.append(textElement)
         
+        // link element
         self.textStorage.enumerateAttribute(SwiftyTextLinkAttributeName, inRange: self.textStorage.entireRange(), options:[]) { (value: AnyObject?, range: NSRange, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
             if value != nil && value is SwiftyTextLink {
                 let linkElement = UIAccessibilityElement(accessibilityContainer: self)
-                let glyphRange = self.layoutManager.glyphRangeForCharacterRange(range, actualCharacterRange: nil)
-                var boundingRect = self.layoutManager.boundingRectForGlyphRange(glyphRange, inTextContainer: self.textContainer)
-                boundingRect.origin.x += self.textContainerInset.left
-                boundingRect.origin.y += self.textContainerInset.top
-                let accessibilityFrame = UIAccessibilityConvertFrameToScreenCoordinates(boundingRect, self)
-                linkElement.accessibilityFrame = accessibilityFrame
-                linkElement.accessibilityValue = (self.text! as NSString).substringWithRange(range)
-                linkElement.accessibilityTraits = UIAccessibilityTraitLink
-                elements.append(linkElement)
+                
+                let glyphRects = self.layoutManager.glyphRectsWithCharacterRange(range, containerInset: self.textContainerInset)
+                var screenRects = [CGRect]()
+                if glyphRects != nil {
+                    for glyphRect in glyphRects! {
+                        screenRects.append(UIAccessibilityConvertFrameToScreenCoordinates(glyphRect, self))
+                    }
+                    
+                    linkElement.accessibilityPath = UIBezierPath.bezierPathWithGlyphRects(screenRects, radius: 0)
+                    let firstScreenRect = screenRects[0]
+                    let firstCenterPoint = CGPointMake(firstScreenRect.midX, firstScreenRect.midY)
+                    linkElement.accessibilityActivationPoint = firstCenterPoint
+                    linkElement.accessibilityValue = (self.text! as NSString).substringWithRange(range)
+                    linkElement.accessibilityTraits = UIAccessibilityTraitLink
+                    elements.append(linkElement)
+                }
             }
         }
-        self.accessibilityElements = elements
         
-        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil)
+        self.accessibilityElements = elements
+    }
+    
+    internal func voiceOverStatusChanged() {
+        self.updateAccessibleElements();
     }
 }
-
 
 
 /**
