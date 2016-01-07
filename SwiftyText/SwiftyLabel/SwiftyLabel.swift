@@ -14,12 +14,16 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     
     public var font: UIFont? {
         didSet {
-            if self.text != nil {
-                if font != nil {
-                    self.textStorage.addAttribute(NSFontAttributeName, value: font!, range: self.textStorage.entireRange())
-                } else {
-                    //if set as nil, use default
-                    self.textStorage.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(17), range: self.textStorage.entireRange())
+            dispatch_sync(self.textQueue) { () -> Void in
+                if self.text != nil {
+                    if self.font != nil {
+                        self.textStorage.addAttribute(NSFontAttributeName, value: self.font!, range: self.textStorage.entireRange())
+                    } else {
+                        //if set as nil, use default
+                        self.textStorage.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(17), range: self.textStorage.entireRange())
+                    }
+                    
+                    self.setNeedsDisplay()
                 }
             }
         }
@@ -27,25 +31,32 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     
     public var textColor: UIColor? {
         didSet {
-            if self.text != nil {
-                if textColor != nil {
-                    self.textStorage.addAttribute(NSForegroundColorAttributeName, value: textColor!, range: self.textStorage.entireRange())
-                } else {
-                    self.textStorage.addAttribute(NSForegroundColorAttributeName, value: UIColor.blackColor(), range: self.textStorage.entireRange())
+            dispatch_sync(self.textQueue) { () -> Void in
+                if self.text != nil {
+                    if self.textColor != nil {
+                        self.textStorage.addAttribute(NSForegroundColorAttributeName, value: self.textColor!, range: self.textStorage.entireRange())
+                    } else {
+                        self.textStorage.addAttribute(NSForegroundColorAttributeName, value: UIColor.blackColor(), range: self.textStorage.entireRange())
+                    }
                 }
+                self.setNeedsDisplay()
             }
         }
     }
     
     public var textAlignment: NSTextAlignment = .Left{
         didSet {
-            self.updateTextParaphStyleWithPropertyName("alignment", value: NSNumber(integer: textAlignment.rawValue))
+            dispatch_sync(self.textQueue) { () -> Void in
+                self.updateTextParaphStyleWithPropertyName("alignment", value: NSNumber(integer: self.textAlignment.rawValue))
+            }
         }
     }
     
     public var lineSpacing: CGFloat = 0.0 {
         didSet {
-            self.updateTextParaphStyleWithPropertyName("lineSpacing", value: NSNumber(float: Float(lineSpacing)))
+            dispatch_sync(self.textQueue) { () -> Void in
+                self.updateTextParaphStyleWithPropertyName("lineSpacing", value: NSNumber(float: Float(self.lineSpacing)))
+            }
         }
     }
     
@@ -57,15 +68,19 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
         }
         
         set {
-            self.textContainer.lineBreakMode = newValue
-            self.layoutManager.textContainerChangedGeometry(self.textContainer)
-            self.setNeedsDisplay()
+            dispatch_sync(self.textQueue) { () -> Void in
+                self.textContainer.lineBreakMode = newValue
+                self.layoutManager.textContainerChangedGeometry(self.textContainer)
+                self.setNeedsDisplay()
+            }
         }
     }
     
     public var firstLineHeadIndent:CGFloat = 0.0 {
         didSet {
-            self.updateTextParaphStyleWithPropertyName("firstLineHeadIndent", value: NSNumber(float: Float(firstLineHeadIndent)))
+            dispatch_sync(self.textQueue) { () -> Void in
+                self.updateTextParaphStyleWithPropertyName("firstLineHeadIndent", value: NSNumber(float: Float(self.firstLineHeadIndent)))
+            }
         }
     }
     
@@ -83,17 +98,19 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
         }
         
         set {
-            let range = self.textStorage.entireRange()
-            self.content = newValue
-            if newValue != nil {
-                self.textStorage.replaceCharactersInRange(range, withString: newValue!)
-                self.updateTextParaphStyle()
-                self.needsParse = true
-            } else {
-                self.textStorage.replaceCharactersInRange(range, withString: "")
+            dispatch_sync(self.textQueue) { () -> Void in
+                let range = self.textStorage.entireRange()
+                self.content = newValue
+                if newValue != nil {
+                    self.textStorage.replaceCharactersInRange(range, withString: newValue!)
+                    self.updateTextParaphStyle()
+                    self.needsParse = true
+                } else {
+                    self.textStorage.replaceCharactersInRange(range, withString: "")
+                }
+                
+                self.setNeedsDisplay()
             }
-
-            self.setNeedsDisplay()
         }
     }
     
@@ -112,16 +129,18 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
         }
         
         set {
-            self.content = newValue
-            let range = self.textStorage.entireRange()
-            if newValue != nil {
-                self.textStorage.replaceCharactersInRange(range, withAttributedString: newValue!)
-                self.needsParse = true
-            } else {
-                self.textStorage.replaceCharactersInRange(range, withString: "")
+            dispatch_sync(self.textQueue) { () -> Void in
+                self.content = newValue
+                let range = self.textStorage.entireRange()
+                if newValue != nil {
+                    self.textStorage.replaceCharactersInRange(range, withAttributedString: newValue!)
+                    self.needsParse = true
+                } else {
+                    self.textStorage.replaceCharactersInRange(range, withString: "")
+                }
+                
+                self.setNeedsDisplay()
             }
-
-            self.setNeedsDisplay()
         }
     }
     
@@ -131,18 +150,22 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
         }
         
         set {
-            self.textContainer.maximumNumberOfLines = newValue
-            self.layoutManager.textContainerChangedGeometry(self.textContainer)
-            self.setNeedsDisplay()
+            dispatch_sync(self.textQueue) { () -> Void in
+                self.textContainer.maximumNumberOfLines = newValue
+                self.layoutManager.textContainerChangedGeometry(self.textContainer)
+                self.setNeedsDisplay()
+            }
         }
     }
     
     internal var textContainer = NSTextContainer()
     public var textContainerInset = UIEdgeInsetsZero{
         didSet {
-            self.textContainer.size = UIEdgeInsetsInsetRect(self.bounds, textContainerInset).size
-            self.layoutManager.textContainerChangedGeometry(self.textContainer)
-            self.setNeedsDisplay()
+            dispatch_sync(self.textQueue) { () -> Void in
+                self.textContainer.size = UIEdgeInsetsInsetRect(self.bounds, self.textContainerInset).size
+                self.layoutManager.textContainerChangedGeometry(self.textContainer)
+                self.setNeedsDisplay()
+            }
         }
     }
     
@@ -154,8 +177,10 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
         }
         
         set {
-            self.textContainer.exclusionPaths = exclusionPaths
-            self.setNeedsDisplay()
+            dispatch_sync(self.textQueue) { () -> Void in
+                self.textContainer.exclusionPaths = self.exclusionPaths
+                self.setNeedsDisplay()
+            }
         }
     }
     
@@ -171,7 +196,7 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     internal var needsParse: Bool = false
     
     internal var asyncTextLayer: CALayer?
-    internal var asyncTextRenderQueue: dispatch_queue_t?
+    internal var textQueue = dispatch_queue_create("com.geeklu.swiftylabel-text", DISPATCH_QUEUE_SERIAL)
     public var drawsTextAsynchronously: Bool = false {
         didSet {
             if drawsTextAsynchronously {
@@ -180,13 +205,11 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
                     self.asyncTextLayer?.frame = self.layer.bounds
                 }
                 self.layer.addSublayer(self.asyncTextLayer!)
-                self.asyncTextRenderQueue = dispatch_queue_create("com.geeklu.swiftylabel-async", DISPATCH_QUEUE_SERIAL);
             } else {
                 if self.asyncTextLayer != nil {
-                    self.asyncTextLayer?.removeFromSuperlayer()
+                    self.asyncTextLayer!.removeFromSuperlayer()
                     self.asyncTextLayer = nil
                 }
-                self.asyncTextRenderQueue = nil;
             }
             self.setNeedsDisplay()
         }
@@ -256,14 +279,22 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
         self.commonInit()
     }
     
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIAccessibilityVoiceOverStatusChanged, object: nil)
+    }
+    
     // MARK:- storage 
     
     public func setLink(link: SwiftyTextLink?, range: NSRange) {
-        self.textStorage.setLink(link, range: range)
+        dispatch_sync(self.textQueue) { () -> Void in
+           self.textStorage.setLink(link, range: range)
+        }
     }
     
     public func insertAttachment(attachment: SwiftyTextAttachment, atIndex loc: Int) {
-        self.textStorage.insertAttachment(attachment, atIndex: loc)
+        dispatch_sync(self.textQueue) { () -> Void in
+           self.textStorage.insertAttachment(attachment, atIndex: loc)
+        }
     }
     /**
      Returns the link attribute at a given position, and by reference the range and the glyph rects of the link.
@@ -274,6 +305,11 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
      - returns: The link at location if existed, otherwise nil
      */
     public func linkAtLocation(location: CGPoint, effectiveRange range: NSRangePointer, effectiveGlyphRects rects: UnsafeMutablePointer<[CGRect]>) -> SwiftyTextLink? {
+        
+        guard self.textStorage.length > 0 else {
+            return nil
+        }
+        
         var locationInTextContainer = location
         locationInTextContainer.x -= self.textContainerInset.left
         locationInTextContainer.y -= self.textContainerInset.top
@@ -294,6 +330,7 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     }
     
     // MARK:- Touch Events
+    
     func resetTouch(){
         self.touchHighlightLayer?.removeFromSuperlayer()
         
@@ -382,6 +419,10 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
 
     // MARK:- GestureRecognizer Delegate
     public override func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard gestureRecognizer == self.singleTapRecognizer || gestureRecognizer == self.doubleTapRecognizer || gestureRecognizer == self.longPressRecognizer else {
+            return true
+        }
+        
         let link = touchInfo.link
         if link != nil {
             if (link!.gestures.contains(.Tap) && gestureRecognizer == self.singleTapRecognizer) || (link!.gestures.contains(.LongPress) && gestureRecognizer == self.longPressRecognizer) {
@@ -496,7 +537,7 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     func drawTextWithRect(rect: CGRect, async: Bool) {
         
         if async {
-            dispatch_async(self.asyncTextRenderQueue!, {
+            dispatch_async(self.textQueue, {
                 if self.needsParse {
                     self.parser?.parseText(self.textStorage)
                     self.needsParse = false

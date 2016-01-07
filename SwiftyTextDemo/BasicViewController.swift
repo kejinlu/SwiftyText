@@ -9,7 +9,7 @@
 import UIKit
 import SwiftyText
 
-class ViewController: UIViewController, SwiftyLabelDelegate {
+class BasicViewController: UIViewController, SwiftyLabelDelegate {
 
     @IBOutlet weak var label: SwiftyLabel!
     
@@ -17,10 +17,6 @@ class ViewController: UIViewController, SwiftyLabelDelegate {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor(red: 229/255.0, green: 229/255.0, blue: 229/255.0, alpha: 1)
         
-        //let label = SwiftyLabel(frame: CGRectMake(0, 0, 300, 400))
-        label.frame = CGRectMake(0, 0, 300, 400)
-        label.autoresizingMask = [.None]
-        label.center = self.view.center
         label.delegate = self
         label.backgroundColor = UIColor(red: 243/255.0, green: 1, blue: 236/255.0, alpha: 1)
         label.text = "Swift is a powerful and intuitive programming language for iOS, OS X, tvOS, and watchOS.  https://developer.apple.com/swift/resources/ . Writing Swift code is interactive and fun, the syntax is concise yet expressive, and apps run lightning-fast. Swift is ready for your next project — or addition into your current app — because Swift code works side-by-side with Objective-C.  "
@@ -58,8 +54,6 @@ class ViewController: UIViewController, SwiftyLabelDelegate {
         if detector != nil {
             label.parser = detector
         }
-        
-        //self.view.addSubview(label)
     }
 
     override func didReceiveMemoryWarning() {
