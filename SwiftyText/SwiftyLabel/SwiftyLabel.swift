@@ -228,10 +228,8 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     //[rangeString: [attributeName: attribute]]
     internal var touchAttributesMap: [String: [String: AnyObject]]?
     
-    public var supportedGestures: SwiftyLabelGesture = [.None]
-    internal var singleTapRecognizer = SwiftyLabelTapRecognizer()
-    internal var doubleTapRecognizer = SwiftyLabelTapRecognizer()
-    internal var longPressRecognizer = SwiftyLabelLongPressRecognizer()
+    public var singleTapRecognizer = SwiftyLabelTapRecognizer()
+    public var longPressRecognizer = SwiftyLabelLongPressRecognizer()
     
     public var delegate: SwiftyLabelDelegate?
     
@@ -250,19 +248,12 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
         self.singleTapRecognizer.delegate = self
         self.singleTapRecognizer.addTarget(self, action: "handleSingleTap:")
         self.addGestureRecognizer(self.singleTapRecognizer)
-        
-        self.doubleTapRecognizer.numberOfTapsRequired = 2
-        self.doubleTapRecognizer.cancelsTouchesInView = false
-        self.doubleTapRecognizer.delegate = self;
-        self.doubleTapRecognizer.addTarget(self, action: "handleDoubleTap:")
-        self.addGestureRecognizer(self.doubleTapRecognizer)
-        
+
         self.longPressRecognizer.cancelsTouchesInView = false
         self.longPressRecognizer.delegate = self
         self.longPressRecognizer.addTarget(self, action: "handleLongPress:")
         self.addGestureRecognizer(self.longPressRecognizer)
         
-        self.singleTapRecognizer.requireGestureRecognizerToFail(self.doubleTapRecognizer)
         self.singleTapRecognizer.requireGestureRecognizerToFail(self.longPressRecognizer)
         
         
@@ -419,27 +410,27 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
 
     // MARK:- GestureRecognizer Delegate
     public override func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
-        guard gestureRecognizer == self.singleTapRecognizer || gestureRecognizer == self.doubleTapRecognizer || gestureRecognizer == self.longPressRecognizer else {
+        if gestureRecognizer == self.singleTapRecognizer || gestureRecognizer == self.longPressRecognizer {
+            let link = touchInfo.link
+            if link != nil {
+                if (link!.gestures.contains(.Tap) && gestureRecognizer == self.singleTapRecognizer) || (link!.gestures.contains(.LongPress) && gestureRecognizer == self.longPressRecognizer) {
+                    return true
+                }
+            }
+            return false
+        } else {
             return true
         }
-        
-        let link = touchInfo.link
-        if link != nil {
-            if (link!.gestures.contains(.Tap) && gestureRecognizer == self.singleTapRecognizer) || (link!.gestures.contains(.LongPress) && gestureRecognizer == self.longPressRecognizer) {
-                return true
-            }
-        } else {
-            if (self.supportedGestures.contains(.Tap) && gestureRecognizer == self.singleTapRecognizer) || (self.supportedGestures.contains(.LongPress) && gestureRecognizer == self.longPressRecognizer) || (self.supportedGestures.contains(.DoubleTap) && gestureRecognizer == self.doubleTapRecognizer) {
-                return true
-            }
-        }
-        return false
     }
     
     public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
         if touch.view == self {
             self.touchInfo.configWithTouch(touch)
-            return true
+            if self.touchInfo.link != nil {
+                return true
+            } else {
+                return false
+            }
         } else {
             return false
         }
@@ -457,15 +448,7 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
                 if location.isInRects(touchInfo.linkGlyphRects!) {
                     self.delegate?.swiftyLabel(self, didTapWithTextLink: link, range: touchInfo.linkRange!)
                 }
-            } else {
-                self.delegate?.swiftyLabelDidTap(self)
             }
-        }
-    }
-    
-    internal func handleDoubleTap(gestureRecognizer: UITapGestureRecognizer){
-        if gestureRecognizer.state == .Ended {
-            self.delegate?.swiftyLabelDidDoubleTap(self)
         }
     }
     
@@ -473,8 +456,6 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
         if gestureRecognizer.state == .Ended {
             if let link = touchInfo.link {
                 self.delegate?.swiftyLabel(self, didLongPressWithTextLink: link, range: touchInfo.linkRange!)
-            } else {
-                self.delegate?.swiftyLabelDidLongPress(self)
             }
         }
     }
@@ -695,21 +676,6 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
 }
 
 
-/**
- The gesture supported by SwiftyLabel itself
- */
-public struct SwiftyLabelGesture: OptionSetType {
-    public let rawValue: UInt
-    public init(rawValue: UInt){ self.rawValue = rawValue}
-    
-    public static let None = SwiftyLabelGesture(rawValue: 0)
-    public static let Tap = SwiftyLabelGesture(rawValue: 1)
-    public static let LongPress = SwiftyLabelGesture(rawValue: 1 << 1)
-    public static let DoubleTap = SwiftyLabelGesture(rawValue: 1 << 2)
-}
-
-
-
 struct SwiftyLabelTouchInfo{
     var touch: UITouch?
     
@@ -748,11 +714,6 @@ public protocol SwiftyLabelDelegate: NSObjectProtocol {
     /// Delegate methods for the touch of link
     func swiftyLabel(swiftyLabel: SwiftyLabel, didTapWithTextLink link: SwiftyTextLink, range: NSRange)
     func swiftyLabel(swiftyLabel: SwiftyLabel, didLongPressWithTextLink link:SwiftyTextLink, range: NSRange)
-    
-    /// Delegate methods for the touch of label itselft
-    func swiftyLabelDidTap(swiftyLabel: SwiftyLabel)
-    func swiftyLabelDidLongPress(swiftyLabel: SwiftyLabel)
-    func swiftyLabelDidDoubleTap(SwiftyLabel: SwiftyLabel)
 }
 
 
@@ -761,10 +722,6 @@ public protocol SwiftyLabelDelegate: NSObjectProtocol {
 public extension SwiftyLabelDelegate {
     func swiftyLabel(swiftyLabel: SwiftyLabel, didTapWithTextLink link: SwiftyTextLink, range: NSRange){}
     func swiftyLabel(swiftyLabel: SwiftyLabel, didLongPressWithTextLink link:SwiftyTextLink, range: NSRange){}
-    
-    func swiftyLabelDidTap(swiftyLabel: SwiftyLabel){}
-    func swiftyLabelDidLongPress(swiftyLabel: SwiftyLabel){}
-    func swiftyLabelDidDoubleTap(swiftyLabel: SwiftyLabel){}
 }
 
 

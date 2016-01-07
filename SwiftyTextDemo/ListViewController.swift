@@ -33,12 +33,13 @@ class ListViewController: UITableViewController, SwiftyLabelDelegate {
         let CellIdentifier = "SwiftyTextCell"
         let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier) as! SwiftyLabelCell
         let attributedText = self.attributedTexts[indexPath.row]
+        cell.swiftyLabel.drawsTextAsynchronously = true
         cell.swiftyLabel.attributedText = attributedText
         return cell
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        let cell = self.tableView(tableView, cellForRowAtIndexPath: indexPath) as! SwiftyLabelCell
+        //let cell = self.tableView(tableView, cellForRowAtIndexPath: indexPath) as! SwiftyLabelCell
         //let size = cell.swiftyLabel.proposedSizeWithConstrainedSize(CGSizeMake(cell.contentView.bounds.width, CGFloat.max))
         return 60
     }

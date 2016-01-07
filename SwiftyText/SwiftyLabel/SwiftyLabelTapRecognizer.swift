@@ -9,11 +9,11 @@
 import Foundation
 import UIKit.UIGestureRecognizerSubclass
 
-class SwiftyLabelTapRecognizer: UIGestureRecognizer {
-    internal var numberOfTapsRequired: Int = 1
+public class SwiftyLabelTapRecognizer: UIGestureRecognizer {
+    public var numberOfTapsRequired: Int = 1
     internal var timeoutTimer: NSTimer?
     
-    override func reset() {
+    override public func reset() {
         timeoutTimer?.invalidate()
         timeoutTimer = nil
     }
@@ -23,7 +23,7 @@ class SwiftyLabelTapRecognizer: UIGestureRecognizer {
         self.state = .Cancelled
     }
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent) {
+    override public func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent) {
         super.touchesBegan(touches, withEvent: event)
         guard touches.count == 1 else {
             self.state = .Failed
@@ -32,12 +32,12 @@ class SwiftyLabelTapRecognizer: UIGestureRecognizer {
         self.state = .Began
     }
     
-    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent) {
+    override public func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent) {
         super.touchesMoved(touches, withEvent: event)
         self.state = .Changed
     }
     
-    internal override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent) {
+    public override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent) {
         if let touch = touches.first {
             if self.numberOfTapsRequired == 1 {
                 if touch.tapCount == 1 || touch.tapCount == 0 {
@@ -61,7 +61,7 @@ class SwiftyLabelTapRecognizer: UIGestureRecognizer {
         super.touchesEnded(touches, withEvent: event)
     }
     
-    override func touchesCancelled(touches: Set<UITouch>, withEvent event: UIEvent) {
+    override public func touchesCancelled(touches: Set<UITouch>, withEvent event: UIEvent) {
         super.touchesCancelled(touches, withEvent: event)
         self.state = .Cancelled
     }

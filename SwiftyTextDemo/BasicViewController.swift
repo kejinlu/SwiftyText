@@ -24,9 +24,7 @@ class BasicViewController: UIViewController, SwiftyLabelDelegate {
         label.font = UIFont.systemFontOfSize(14)
         label.textColor = UIColor.blackColor()
         label.firstLineHeadIndent = 24
-        label.drawsTextAsynchronously = true
-        label.supportedGestures = [.DoubleTap,.Tap,.LongPress]
-        
+        label.drawsTextAsynchronously = true        
 
         let link = SwiftyTextLink()
         link.URL = NSURL(string: "https://developer.apple.com/swift/")

@@ -9,9 +9,9 @@
 import Foundation
 import UIKit.UIGestureRecognizerSubclass
 
-class SwiftyLabelLongPressRecognizer: UIGestureRecognizer {
-    internal var minimumPressDuration: CFTimeInterval = 0.7
-    internal var allowableMovement: CGFloat = 10.0
+public class SwiftyLabelLongPressRecognizer: UIGestureRecognizer {
+    public var minimumPressDuration: CFTimeInterval = 0.7
+    public var allowableMovement: CGFloat = 10.0
     internal var initialPoint: CGPoint = CGPointZero
     
     internal var longPressTimer: NSTimer?
@@ -31,7 +31,7 @@ class SwiftyLabelLongPressRecognizer: UIGestureRecognizer {
         self.state = .Ended
     }
     
-    internal override func reset(){
+    public override func reset(){
         super.reset()
         
         self.initialPoint = CGPointZero
@@ -39,7 +39,7 @@ class SwiftyLabelLongPressRecognizer: UIGestureRecognizer {
         self.longPressTimer = nil
     }
     
-    internal override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent) {
+    public override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent) {
         super.touchesBegan(touches, withEvent: event)
         
         guard touches.count == 1 else {
@@ -55,7 +55,7 @@ class SwiftyLabelLongPressRecognizer: UIGestureRecognizer {
         }
     }
     
-    internal override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent) {
+    public override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent) {
         if let touch = touches.first{
             if !self.isTouchCloseToInitialPoint(touch){
                 self.longPressTimer?.invalidate()
@@ -66,12 +66,12 @@ class SwiftyLabelLongPressRecognizer: UIGestureRecognizer {
         super.touchesMoved(touches, withEvent: event)
     }
     
-    internal override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent) {
+    public override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent) {
         super.touchesEnded(touches, withEvent: event)
         self.state = .Failed
     }
     
-    override func touchesCancelled(touches: Set<UITouch>, withEvent event: UIEvent) {
+    override public func touchesCancelled(touches: Set<UITouch>, withEvent event: UIEvent) {
         super.touchesCancelled(touches, withEvent: event)
         self.state = .Cancelled
     }
