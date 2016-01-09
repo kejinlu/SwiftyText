@@ -425,6 +425,7 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     
     public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
         if touch.view == self {
+            //TODO:减少次数
             self.touchInfo.configWithTouch(touch)
             if self.touchInfo.link != nil {
                 return true
@@ -708,14 +709,12 @@ struct SwiftyLabelTouchInfo{
 }
 
 
-
 public protocol SwiftyLabelDelegate: NSObjectProtocol {
     
     /// Delegate methods for the touch of link
     func swiftyLabel(swiftyLabel: SwiftyLabel, didTapWithTextLink link: SwiftyTextLink, range: NSRange)
     func swiftyLabel(swiftyLabel: SwiftyLabel, didLongPressWithTextLink link:SwiftyTextLink, range: NSRange)
 }
-
 
 
 //Default implementations for SwiftyLabelDelegate
@@ -725,13 +724,11 @@ public extension SwiftyLabelDelegate {
 }
 
 
-
 extension CGSize {
     public func insetsWith(insets: UIEdgeInsets) -> CGSize{
         return CGSizeMake(self.width - insets.left - insets.right, self.height - insets.top - insets.bottom)
     }
 }
-
 
 
 extension CGPoint {

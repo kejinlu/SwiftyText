@@ -14,16 +14,6 @@ public class SwiftyTextStorage: NSTextStorage {
     // MARK:- Properties
     internal var storage: NSMutableAttributedString
     
-    // MARK:- Private methods
-    private func isValidRange(range: NSRange) -> Bool {
-        var isValid = false
-        let fullRange = NSMakeRange(0, self.length)
-        if range.location >= fullRange.location && NSMaxRange(range) <= NSMaxRange(fullRange) {
-            isValid = true
-        }
-        return isValid
-    }
-    
     // MARK:- Init
     public override init(string str: String, attributes attrs: [String : AnyObject]?) {
         self.storage = NSMutableAttributedString(string: str, attributes: attrs)
@@ -35,10 +25,39 @@ public class SwiftyTextStorage: NSTextStorage {
     }
 
     required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        self.storage = NSMutableAttributedString(string: "", attributes: nil)
+        super.init(coder: aDecoder)
+    }
+        
+    // MARK:- NSMutableAttributedString&NSAttributedString primitives
+    
+    public override var string: String {
+        return self.storage.string
     }
     
-    // MARK:- Convenience attribute setting method
+    public override func attributesAtIndex(location: Int, effectiveRange range: NSRangePointer) -> [String : AnyObject]{
+        return self.storage.attributesAtIndex(location, effectiveRange: range)
+    }
+    
+    public override func replaceCharactersInRange(range: NSRange, withString str: String){
+        self.beginEditing()
+        self.storage.replaceCharactersInRange(range, withString: str)
+        self.edited([.EditedAttributes, .EditedCharacters], range: range, changeInLength: str.characters.count - range.length)
+        self.endEditing()
+        
+    }
+    
+    public override func setAttributes(attrs: [String : AnyObject]?, range: NSRange){
+        self.beginEditing()
+        self.storage.setAttributes(attrs, range: range)
+        self.edited([.EditedAttributes], range: range, changeInLength: 0)
+        self.endEditing()
+    }
+}
+
+
+
+extension NSMutableAttributedString {
     public func setFont(font: UIFont?, range:NSRange) {
         if self.isValidRange(range) {
             if font != nil {
@@ -93,6 +112,47 @@ public class SwiftyTextStorage: NSTextStorage {
             self.insertAttributedString(attachmentAttributedString, atIndex: loc)
         }
     }
+}
+
+
+extension NSAttributedString {
+    public func isValidRange(range: NSRange) -> Bool {
+        var isValid = false
+        let fullRange = NSMakeRange(0, self.length)
+        if range.location >= fullRange.location && NSMaxRange(range) <= NSMaxRange(fullRange) {
+            isValid = true
+        }
+        return isValid
+    }
+    
+    public func entireRange() -> NSRange {
+        let range = NSMakeRange(0, self.length)
+        return range
+    }
+    
+    public func proposedSizeWithConstrainedSize(constrainedSize: CGSize, exclusionPaths: [UIBezierPath]?, lineBreakMode: NSLineBreakMode?, maximumNumberOfLines: Int?) -> CGSize {
+        let textContainer = NSTextContainer(size: constrainedSize)
+        if exclusionPaths != nil {
+            textContainer.exclusionPaths = exclusionPaths!
+        }
+        if lineBreakMode != nil {
+            textContainer.lineBreakMode = lineBreakMode!
+        }
+        if maximumNumberOfLines != nil {
+            textContainer.maximumNumberOfLines = maximumNumberOfLines!
+        }
+        
+        let layoutManager = NSLayoutManager()
+        layoutManager.addTextContainer(textContainer)
+        
+        let textStorage = SwiftyTextStorage()
+        textStorage.replaceCharactersInRange(textStorage.entireRange(), withAttributedString: self)
+        textStorage.addLayoutManager(layoutManager)
+        
+        layoutManager.glyphRangeForTextContainer(textContainer)
+        let proposedSize = layoutManager.usedRectForTextContainer(textContainer).size
+        return proposedSize
+    }
     
     // MARK:- Special Access
     internal func viewAttachments() -> [SwiftyTextAttachment] {
@@ -106,40 +166,6 @@ public class SwiftyTextStorage: NSTextStorage {
             }
         }
         return attachments
-    }
-        
-    // MARK:- NSMutableAttributedString&NSAttributedString primitives
-    
-    public override var string: String {
-        return self.storage.string
-    }
-    
-    public override func attributesAtIndex(location: Int, effectiveRange range: NSRangePointer) -> [String : AnyObject]{
-        return self.storage.attributesAtIndex(location, effectiveRange: range)
-    }
-    
-    public override func replaceCharactersInRange(range: NSRange, withString str: String){
-        self.beginEditing()
-        self.storage.replaceCharactersInRange(range, withString: str)
-        self.edited([.EditedAttributes, .EditedCharacters], range: range, changeInLength: str.characters.count - range.length)
-        self.endEditing()
-        
-    }
-    
-    public override func setAttributes(attrs: [String : AnyObject]?, range: NSRange){
-        self.beginEditing()
-        self.storage.setAttributes(attrs, range: range)
-        self.edited([.EditedAttributes], range: range, changeInLength: 0)
-        self.endEditing()
-    }
-}
-
-
-
-extension SwiftyTextStorage {
-    public func entireRange() -> NSRange {
-        let range = NSMakeRange(0, self.length)
-        return range
     }
     
     public func attributesRangeMapInRange(textRange: NSRange) -> [String: [String: AnyObject]]? {

@@ -48,8 +48,8 @@ public class SwiftyLabelLongPressRecognizer: UIGestureRecognizer {
         }
         
         if let touch = touches.first {
-            self.initialPoint = touch.locationInView(self.view)
             self.state = .Began
+            self.initialPoint = touch.locationInView(self.view)
             self.longPressTimer = NSTimer.scheduledTimerWithTimeInterval(self.minimumPressDuration, target: self, selector:"longPressed:", userInfo: nil, repeats: false)
             
         }

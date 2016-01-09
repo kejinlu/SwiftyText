@@ -51,7 +51,11 @@ public class SwiftyTextAttachment: NSTextAttachment {
         if self.image != nil || self.contentView != nil {
             var attachmentSize = CGSizeZero
             if self.image != nil {
-                attachmentSize = self.image!.size
+                if CGSizeEqualToSize(CGSizeZero, self.imageSize) {
+                    attachmentSize = self.image!.size
+                } else {
+                    attachmentSize = self.imageSize
+                }
             } else {
                 attachmentSize = self.contentView!.frame.size
             }
