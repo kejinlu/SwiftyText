@@ -237,6 +237,7 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     
     func commonInit() {
         self.textContainer.size = frame.size
+        self.textContainer.lineFragmentPadding = 0.0
         self.layoutManager.addTextContainer(self.textContainer)
         self.textStorage.addLayoutManager(self.layoutManager)
         

@@ -18,8 +18,13 @@ public enum TBTextAttachmentTextVerticalAlignment: Int {
 public class SwiftyTextAttachment: NSTextAttachment {
     public var contentView: UIView?
     public private(set) var contentViewFrameInTextContainer:CGRect?
+    
+    /** The layout padding at the beginning and end of the view or image attachment
+     */
     public var padding: CGFloat = 0.0
     
+    /** Image size setting for the image attachment when use Bottom, Center or Top Vertical Alignment
+     */
     public var imageSize: CGSize = CGSizeZero
     
     public var attachmentTextVerticalAlignment: TBTextAttachmentTextVerticalAlignment = .Bottom

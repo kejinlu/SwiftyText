@@ -54,7 +54,7 @@ class ListViewController: UITableViewController, SwiftyLabelDelegate {
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         let attributedText = self.attributedTexts[indexPath.row]
         let size = attributedText.proposedSizeWithConstrainedSize(CGSize(width: self.tableView.bounds.width, height: CGFloat.max), exclusionPaths: nil, lineBreakMode: nil, maximumNumberOfLines: nil)
-        return size.height + 1
+        return size.height
     }
     
     override func scrollViewWillBeginDragging(scrollView: UIScrollView) {

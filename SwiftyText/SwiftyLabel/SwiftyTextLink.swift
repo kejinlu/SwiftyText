@@ -42,7 +42,6 @@ public class SwiftyTextLink: NSObject {
 }
 
 
-
 public struct SwiftyTextLinkGesture: OptionSetType {
     public let rawValue: UInt
     public init(rawValue: UInt){ self.rawValue = rawValue}

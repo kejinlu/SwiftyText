@@ -23,7 +23,7 @@ public struct SwiftyTextDetectorType: OptionSetType {
 }
 
 /**
- SwiftyTextDetector is a kind of SwiftyTextParser
+ SwiftyTextDetector is a special kind of SwiftyTextParser which parse attributed string with regular expression
  */
 public class SwiftyTextDetector: NSObject, SwiftyTextParser {
     public var name:String

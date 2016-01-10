@@ -11,10 +11,8 @@ import UIKit
 
 public class SwiftyTextStorage: NSTextStorage {
     
-    // MARK:- Properties
     internal var storage: NSMutableAttributedString
     
-    // MARK:- Init
     public override init(string str: String, attributes attrs: [String : AnyObject]?) {
         self.storage = NSMutableAttributedString(string: str, attributes: attrs)
         super.init()
@@ -28,8 +26,9 @@ public class SwiftyTextStorage: NSTextStorage {
         self.storage = NSMutableAttributedString(string: "", attributes: nil)
         super.init(coder: aDecoder)
     }
+    
         
-    // MARK:- NSMutableAttributedString&NSAttributedString primitives
+    // NSMutableAttributedString&NSAttributedString primitives
     
     public override var string: String {
         return self.storage.string
@@ -58,6 +57,40 @@ public class SwiftyTextStorage: NSTextStorage {
 
 
 extension NSMutableAttributedString {
+    
+    public var font: UIFont? {
+        get {
+            var effectiveRange = NSMakeRange(NSNotFound, 0)
+            let attribute = self.attribute(NSFontAttributeName, atIndex: 0, longestEffectiveRange: &effectiveRange, inRange: self.entireRange())
+            if NSEqualRanges(self.entireRange(), effectiveRange) {
+                let fontAttribute = attribute as? UIFont
+                return fontAttribute
+            } else {
+                return nil
+            }
+
+        }
+        set {
+            self.setFont(newValue, range: self.entireRange())
+        }
+    }
+    
+    public var foregroundColor: UIColor? {
+        get {
+            var effectiveRange = NSMakeRange(NSNotFound, 0)
+            let attribute = self.attribute(NSForegroundColorAttributeName, atIndex: 0, longestEffectiveRange: &effectiveRange, inRange: self.entireRange())
+            if NSEqualRanges(self.entireRange(), effectiveRange) {
+                let foregroundColorAttribute = attribute as? UIColor
+                return foregroundColorAttribute
+            } else {
+                return nil
+            }
+        }
+        set {
+            self.setForegroundColor(newValue, range: self.entireRange())
+        }
+    }
+    
     public func setFont(font: UIFont?, range:NSRange) {
         if self.isValidRange(range) {
             if font != nil {
@@ -132,6 +165,7 @@ extension NSAttributedString {
     
     public func proposedSizeWithConstrainedSize(constrainedSize: CGSize, exclusionPaths: [UIBezierPath]?, lineBreakMode: NSLineBreakMode?, maximumNumberOfLines: Int?) -> CGSize {
         let textContainer = NSTextContainer(size: constrainedSize)
+        textContainer.lineFragmentPadding = 0.0
         if exclusionPaths != nil {
             textContainer.exclusionPaths = exclusionPaths!
         }
@@ -150,32 +184,11 @@ extension NSAttributedString {
         textStorage.addLayoutManager(layoutManager)
         
         layoutManager.glyphRangeForTextContainer(textContainer)
-        let proposedSize = layoutManager.usedRectForTextContainer(textContainer).size
-        return proposedSize
-    }
-    
-    // MARK:- Special Access
-    internal func viewAttachments() -> [SwiftyTextAttachment] {
-        var attachments = [SwiftyTextAttachment]()
-        self.enumerateAttribute(NSAttachmentAttributeName, inRange: self.entireRange(), options:[]) { (value: AnyObject?, range: NSRange, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
-            if value != nil && value is SwiftyTextAttachment {
-                let attachment = value as! SwiftyTextAttachment
-                if attachment.contentView != nil {
-                    attachments.append(attachment)
-                }
-            }
-        }
-        return attachments
-    }
-    
-    public func attributesRangeMapInRange(textRange: NSRange) -> [String: [String: AnyObject]]? {
+        var proposedSize = layoutManager.usedRectForTextContainer(textContainer).size
         
-        var attributesRangeMap:[String: [String: AnyObject]]? = [String: [String: AnyObject]]()
-        self.enumerateAttributesInRange(textRange, options: NSAttributedStringEnumerationOptions()) { (attrs, range, stop) -> Void in
-            let rangeString = NSStringFromRange(range)
-            attributesRangeMap![rangeString] = attrs
-        }
-        return attributesRangeMap
+        proposedSize.width = ceil(proposedSize.width)
+        proposedSize.height = ceil(proposedSize.height)
+        return proposedSize
     }
     
     public func neighbourFontDescenderWithRange(range: NSRange) -> CGFloat {
@@ -197,5 +210,28 @@ extension NSAttributedString {
             }
         }
         return fontDescender;
+    }
+    
+    internal func viewAttachments() -> [SwiftyTextAttachment] {
+        var attachments = [SwiftyTextAttachment]()
+        self.enumerateAttribute(NSAttachmentAttributeName, inRange: self.entireRange(), options:[]) { (value: AnyObject?, range: NSRange, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
+            if value != nil && value is SwiftyTextAttachment {
+                let attachment = value as! SwiftyTextAttachment
+                if attachment.contentView != nil {
+                    attachments.append(attachment)
+                }
+            }
+        }
+        return attachments
+    }
+    
+    internal func attributesRangeMapInRange(textRange: NSRange) -> [String: [String: AnyObject]]? {
+        
+        var attributesRangeMap:[String: [String: AnyObject]]? = [String: [String: AnyObject]]()
+        self.enumerateAttributesInRange(textRange, options: NSAttributedStringEnumerationOptions()) { (attrs, range, stop) -> Void in
+            let rangeString = NSStringFromRange(range)
+            attributesRangeMap![rangeString] = attrs
+        }
+        return attributesRangeMap
     }
 }
