@@ -31,9 +31,6 @@ class BasicViewController: UIViewController, SwiftyLabelDelegate {
         link.attributes = [NSForegroundColorAttributeName:UIColor(red: 0, green: 122/255.0, blue: 1.0, alpha: 1.0),NSUnderlineStyleAttributeName:NSUnderlineStyle.StyleSingle.rawValue]
         label.setLink(link, range: NSMakeRange(0, 5))
         
-        
-
-        
         let imageAttachment = SwiftyTextAttachment()
         imageAttachment.image = UIImage(named: "swift")
         imageAttachment.attachmentTextVerticalAlignment = .Center
@@ -52,6 +49,7 @@ class BasicViewController: UIViewController, SwiftyLabelDelegate {
         if detector != nil {
             label.parser = detector
         }
+        label.sizeToFit()
     }
 
     override func didReceiveMemoryWarning() {

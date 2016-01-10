@@ -584,13 +584,17 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
         self.textContainer.size = constrainedSizeWithInsets
         self.layoutManager.glyphRangeForTextContainer(self.textContainer)
         var proposedSize = self.layoutManager.usedRectForTextContainer(self.textContainer).size
+        proposedSize.width = ceil(proposedSize.width)
+        proposedSize.height = ceil(proposedSize.height)
         proposedSize.width += (self.textContainerInset.left + self.textContainerInset.right)
         proposedSize.height += (self.textContainerInset.top + self.textContainerInset.bottom)
         return proposedSize;
     }
     
     public override func sizeThatFits(size: CGSize) -> CGSize {
-        return self.proposedSizeWithConstrainedSize(size)
+        var constrainedSize = size
+        constrainedSize.height = CGFloat.max
+        return self.proposedSizeWithConstrainedSize(constrainedSize)
     }
     
     public override func layoutSubviews() {
