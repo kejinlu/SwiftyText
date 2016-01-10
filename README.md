@@ -42,6 +42,27 @@ github "kejinlu/SwiftyText"
 - attributedText 设置此属性会替换原先的text文本以及所有的相关样式，但是之后重新设置textColor,font,textAlignment,lineSpacing,paragraphSpacing,firstLineHeadIndent这些属性的时候，会将样式重新设置到整个attributedText
 - numberOfLines将设置文本控件的最大行数，lineBreakMode设置文本的断行模式（目前发现一个Text Kit的bug，当lineBreakMode设置为NSLineBreakByCharWrapping的时候numberOfLines起不了约束的作用）
 
+
+SwiftyText 提供了一些NSAttributedString以及NSMutableAttributedString的扩展方法，方便使用者快捷设置自己的Attributed String
+
+```
+extension NSAttributedString {
+    public func isValidRange(range: NSRange) -> Bool
+    public func entireRange() -> NSRange
+    public func proposedSizeWithConstrainedSize(constrainedSize: CGSize, exclusionPaths: [UIBezierPath]?, lineBreakMode: NSLineBreakMode?, maximumNumberOfLines: Int?) -> CGSize //计算最佳Size
+    public func neighbourFontDescenderWithRange(range: NSRange) -> CGFloat
+}
+
+extension NSMutableAttributedString {
+    public var font: UIFont?
+    public var foregroundColor: UIColor?
+    public func setFont(font: UIFont?, range: NSRange)
+    public func setForegroundColor(foregroundColor: UIColor?, range: NSRange)
+    public func setLink(link: SwiftyText.SwiftyTextLink?, range: NSRange)
+    public func insertAttachment(attachment: SwiftyText.SwiftyTextAttachment, atIndex loc: Int)
+}
+```
+
 这里创建一个SwiftyLabel, 代码如下：
 
 
