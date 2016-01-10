@@ -127,14 +127,14 @@ SwiftyTextAttachment在NSTextAttachment上做了增强，同时支持基于图�
  let imageAttachment = SwiftyTextAttachment()
  imageAttachment.image = UIImage(named: "logo")
  imageAttachment.attachmentTextVerticalAlignment = .Top
- label.textStorage.insertAttachment(imageAttachment, atIndex: label.textStorage.length)
+ label.insertAttachment(imageAttachment, atIndex: label.textStorage.length)
  
  let sliderAttachment = SwiftyTextAttachment()
  let slider = UISlider()
  sliderAttachment.contentView = slider;
  sliderAttachment.padding = 3.0
  sliderAttachment.attachmentTextVerticalAlignment = .Center
- label.textStorage.insertAttachment(sliderAttachment, atIndex: 8)
+ label.insertAttachment(sliderAttachment, atIndex: 8)
 ```
 
 下图为demo的效果截图：
