@@ -72,15 +72,18 @@ label.drawsTextAsynchronously = true
 let link = SwiftyTextLink()
 link.URL = NSURL(string: "https://developer.apple.com/swift/")
 link.attributes = [NSForegroundColorAttributeName:UIColor(red: 0, green: 122/255.0, blue: 1.0, alpha: 1.0),NSUnderlineStyleAttributeName:NSUnderlineStyle.StyleSingle.rawValue]
-label.textStorage.setLink(link, range: NSMakeRange(0, 5))
+label.setLink(link, range: NSMakeRange(0, 5))
 ```
 
 
-#### TextDetector
-TBTextDetector是用来描述text storage特定文本识别的模式，以及对应式样的描述, 具体的包括下面一些属性
+#### TextParser
+有很多时候我们需要对特定的模式的文本做特殊处理，诸如文本替换，或者特定的文本设置特定的属性，诸如颜色，字体等，这个时候我们便可以通过实现SwiftyTextParser protocol来实现自己的Text Parser，设置到SwiftyLabel中。Text Parser存在的好处在于处理逻辑的复用。
+在SwiftyText中定义了一种叫做Detector的特殊Text Parser，可以通过设置正则以及对应的属性的方式来创建一个Parser。
+还有一个特殊的Text Parser叫做 SwiftyTextSuperParser，它其实就是一个parser container， 是一个Text Parser的容器，这样就可以将多个 Text Parser合并成一个。
 
+下面主要讲解下Detector
 - name detector的名字
-- linkable 是否是链接，如果是链接的话会对匹配的文本设置上Link属性，支持点击
+- linkable 是否是链接，如果是链接的话会对匹配的文本设置上Link属性，支持点击, 你还可以通过linkGestures来设置链接支持的手势
 - regularExpression 匹配的模式，类型为NSRegularExpression的实例或者其子类的对象
 - attributes 匹配的文本需要设置的属性，比如特定颜色，字体，下划线等
 - highlightedAttributes 当linkable为YES时，此属性用来决定匹配的文本的点击时的高亮属性
@@ -89,12 +92,15 @@ TBTextDetector是用来描述text storage特定文本识别的模式，以及对
 ```objc
 let detector = SwiftyTextDetector.detectorWithType([.URL,.Address])
 if detector != nil {
-    label.addTextDetector(detector!)
+    label.parser = detector
 }
 ```
 
 #### Attachment
-SwiftyTextAttachment在NSTextAttachment上做了增强，同时支持基于图片以及基于UIView的Attachment。图片，UIView类型的附件都支持和文本在纵向上的各种对齐方式:靠顶对齐，居中，靠底对齐，缩放以适配文本高度。其中基于UIView的Attachment还可以通过设置contentViewPadding来设置左右的padding。
+SwiftyTextAttachment在NSTextAttachment上做了增强，同时支持基于图片以及基于UIView的Attachment。
+图片，UIView类型的附件都支持和文本在纵向上的各种对齐方式:靠顶对齐，居中，靠底对齐，缩放以适配文本高度，都支持通过设置padding来控制前后的padding。
+图片Attachment还支持通过设置imageSize来控制图片的大小（当垂直对齐为 靠顶对齐，居中，靠底对齐时起作用）
+
 
 ```objc
  let imageAttachment = SwiftyTextAttachment()
@@ -105,7 +111,7 @@ SwiftyTextAttachment在NSTextAttachment上做了增强，同时支持基于图�
  let sliderAttachment = SwiftyTextAttachment()
  let slider = UISlider()
  sliderAttachment.contentView = slider;
- sliderAttachment.contentViewPadding = 3.0
+ sliderAttachment.padding = 3.0
  sliderAttachment.attachmentTextVerticalAlignment = .Center
  label.textStorage.insertAttachment(sliderAttachment, atIndex: 8)
 ```
@@ -115,7 +121,7 @@ SwiftyTextAttachment在NSTextAttachment上做了增强，同时支持基于图�
 <img src="/Assets/demo.png" height="480"/>
 
 #### 其余Text Kit的特性
-其余的Text Kit的特性可以通过 NSTextStorage， NSLayoutManager，以及NSTextContainer来实现。 比如要实现exclusionPaths
+其余的Text Kit的特性比如exclusionPaths，可以通过SwiftyLabel的exclusionPaths的属性进行设置。
 
 ### 许可证
 SwiftyText 基于 MIT license进行开源。 具体详情请查看根目录下的LICENSE文件。
