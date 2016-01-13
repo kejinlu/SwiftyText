@@ -264,6 +264,7 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     override public init(frame: CGRect) {
         super.init(frame: frame)
         self.commonInit()
+        self.backgroundColor = UIColor.whiteColor()
     }
 
     required public init?(coder aDecoder: NSCoder) {
