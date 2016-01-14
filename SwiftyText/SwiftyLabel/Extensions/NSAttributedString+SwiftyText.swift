@@ -10,12 +10,12 @@ import Foundation
 
 extension NSAttributedString {
     public func containsRange(range: NSRange) -> Bool {
-        var isValid = false
-        let fullRange = NSMakeRange(0, self.length)
-        if range.location >= fullRange.location && NSMaxRange(range) <= NSMaxRange(fullRange) {
-            isValid = true
+        var contains = false
+        let entireRange = self.entireRange()
+        if range.location >= entireRange.location && NSMaxRange(range) <= NSMaxRange(entireRange) {
+            contains = true
         }
-        return isValid
+        return contains
     }
     
     public func entireRange() -> NSRange {

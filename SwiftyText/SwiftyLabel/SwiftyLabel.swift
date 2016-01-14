@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDelegate {
     
@@ -76,11 +77,33 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
         }
     }
     
-    public var firstLineHeadIndent:CGFloat = 0.0 {
+    public var firstLineHeadIndent: CGFloat = 0.0 {
         didSet {
             dispatch_sync(self.textQueue) { () -> Void in
                 self.updateTextParaphStyleWithPropertyName("firstLineHeadIndent", value: NSNumber(float: Float(self.firstLineHeadIndent)))
             }
+        }
+    }
+    
+    internal var defaultTextAttributes: [String: AnyObject]? {
+        let attributes = NSMutableDictionary()
+        attributes[NSFontAttributeName] = self.font ?? UIFont.systemFontOfSize(18)
+        attributes[NSForegroundColorAttributeName] = self.textColor ?? UIColor.blackColor()
+        let paragraphStyle = NSMutableParagraphStyle()
+        if self.textAlignment != paragraphStyle.alignment {
+            paragraphStyle.alignment = self.textAlignment
+        }
+        if self.lineSpacing != paragraphStyle.lineSpacing {
+            paragraphStyle.lineSpacing = self.lineSpacing
+        }
+        if self.firstLineHeadIndent != paragraphStyle.firstLineHeadIndent {
+            paragraphStyle.firstLineHeadIndent = self.firstLineHeadIndent
+        }
+        attributes[NSParagraphStyleAttributeName] = paragraphStyle.copy()
+        if attributes.count > 0 {
+            return attributes.copy() as? [String : AnyObject]
+        } else {
+            return nil;
         }
     }
     
@@ -103,7 +126,11 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
                 self.content = newValue
                 if newValue != nil {
                     self.textStorage.replaceCharactersInRange(range, withString: newValue!)
-                    self.updateTextParaphStyle()
+                    let defaultAttributes = self.defaultTextAttributes
+                    if defaultAttributes != nil {
+                        self.textStorage.addAttributes(defaultAttributes!, range: self.textStorage.entireRange())
+                    }
+
                     self.needsParse = true
                 } else {
                     self.textStorage.replaceCharactersInRange(range, withString: "")
