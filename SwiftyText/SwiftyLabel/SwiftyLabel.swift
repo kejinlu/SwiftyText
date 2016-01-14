@@ -185,7 +185,7 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     }
     
     internal var layoutManager = NSLayoutManager()
-    internal var textStorage = SwiftyTextStorage()
+    internal var textStorage = NSTextStorage()
     
     public var parser: SwiftyTextParser? {
         didSet {

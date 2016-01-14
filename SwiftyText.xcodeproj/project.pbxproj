@@ -15,12 +15,9 @@
 		A35BAC531C1AC76A004FFABC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A35BAC511C1AC76A004FFABC /* Main.storyboard */; };
 		A35BAC551C1AC76A004FFABC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A35BAC541C1AC76A004FFABC /* Assets.xcassets */; };
 		A35BAC581C1AC76A004FFABC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A35BAC561C1AC76A004FFABC /* LaunchScreen.storyboard */; };
-		A35BAC651C1AC808004FFABC /* NSLayoutManager+GlyphRects.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35BAC5E1C1AC808004FFABC /* NSLayoutManager+GlyphRects.swift */; };
 		A35BAC661C1AC808004FFABC /* SwiftyLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35BAC5F1C1AC808004FFABC /* SwiftyLabel.swift */; };
 		A35BAC681C1AC808004FFABC /* SwiftyTextAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35BAC611C1AC808004FFABC /* SwiftyTextAttachment.swift */; };
 		A35BAC691C1AC808004FFABC /* SwiftyTextDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35BAC621C1AC808004FFABC /* SwiftyTextDetector.swift */; };
-		A35BAC6A1C1AC808004FFABC /* SwiftyTextStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35BAC631C1AC808004FFABC /* SwiftyTextStorage.swift */; };
-		A35BAC6B1C1AC808004FFABC /* UIBezierPath+Rects.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35BAC641C1AC808004FFABC /* UIBezierPath+Rects.swift */; };
 		A37B90F11C2AC72500F37FA1 /* SwiftyTextParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37B90F01C2AC72500F37FA1 /* SwiftyTextParser.swift */; };
 		A37B91041C317BAA00F37FA1 /* SwiftyLabelLongPressRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37B91031C317BAA00F37FA1 /* SwiftyLabelLongPressRecognizer.swift */; };
 		A37B91061C317E1500F37FA1 /* SwiftyLabelTapRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37B91051C317E1500F37FA1 /* SwiftyLabelTapRecognizer.swift */; };
@@ -32,6 +29,10 @@
 		A396DBB01C3C06B100155664 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A396DBAF1C3C06B100155664 /* AudioToolbox.framework */; };
 		A396DBB21C3C06B700155664 /* SpriteKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A396DBB11C3C06B700155664 /* SpriteKit.framework */; };
 		A3987DE91C22964600CF5202 /* SwiftyTextLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3987DE81C22964600CF5202 /* SwiftyTextLink.swift */; };
+		A3BF75AB1C474A00007E1C89 /* NSAttributedString+SwiftyText.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3BF75A71C474A00007E1C89 /* NSAttributedString+SwiftyText.swift */; };
+		A3BF75AC1C474A00007E1C89 /* NSLayoutManager+GlyphRects.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3BF75A81C474A00007E1C89 /* NSLayoutManager+GlyphRects.swift */; };
+		A3BF75AD1C474A00007E1C89 /* NSMutableAttributedString+SwiftyText.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3BF75A91C474A00007E1C89 /* NSMutableAttributedString+SwiftyText.swift */; };
+		A3BF75AE1C474A00007E1C89 /* UIBezierPath+Rects.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3BF75AA1C474A00007E1C89 /* UIBezierPath+Rects.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,12 +80,9 @@
 		A35BAC541C1AC76A004FFABC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A35BAC571C1AC76A004FFABC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A35BAC591C1AC76A004FFABC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A35BAC5E1C1AC808004FFABC /* NSLayoutManager+GlyphRects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSLayoutManager+GlyphRects.swift"; sourceTree = "<group>"; };
 		A35BAC5F1C1AC808004FFABC /* SwiftyLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyLabel.swift; sourceTree = "<group>"; };
 		A35BAC611C1AC808004FFABC /* SwiftyTextAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyTextAttachment.swift; sourceTree = "<group>"; };
 		A35BAC621C1AC808004FFABC /* SwiftyTextDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyTextDetector.swift; sourceTree = "<group>"; };
-		A35BAC631C1AC808004FFABC /* SwiftyTextStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyTextStorage.swift; sourceTree = "<group>"; };
-		A35BAC641C1AC808004FFABC /* UIBezierPath+Rects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIBezierPath+Rects.swift"; sourceTree = "<group>"; };
 		A37B90F01C2AC72500F37FA1 /* SwiftyTextParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyTextParser.swift; sourceTree = "<group>"; };
 		A37B91031C317BAA00F37FA1 /* SwiftyLabelLongPressRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyLabelLongPressRecognizer.swift; sourceTree = "<group>"; };
 		A37B91051C317E1500F37FA1 /* SwiftyLabelTapRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyLabelTapRecognizer.swift; sourceTree = "<group>"; };
@@ -95,6 +93,10 @@
 		A396DBB11C3C06B700155664 /* SpriteKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpriteKit.framework; path = System/Library/Frameworks/SpriteKit.framework; sourceTree = SDKROOT; };
 		A396DBB61C3C08B700155664 /* SwiftyTextDemo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SwiftyTextDemo-Bridging-Header.h"; sourceTree = "<group>"; };
 		A3987DE81C22964600CF5202 /* SwiftyTextLink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyTextLink.swift; sourceTree = "<group>"; };
+		A3BF75A71C474A00007E1C89 /* NSAttributedString+SwiftyText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+SwiftyText.swift"; sourceTree = "<group>"; };
+		A3BF75A81C474A00007E1C89 /* NSLayoutManager+GlyphRects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSLayoutManager+GlyphRects.swift"; sourceTree = "<group>"; };
+		A3BF75A91C474A00007E1C89 /* NSMutableAttributedString+SwiftyText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSMutableAttributedString+SwiftyText.swift"; sourceTree = "<group>"; };
+		A3BF75AA1C474A00007E1C89 /* UIBezierPath+Rects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIBezierPath+Rects.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,19 +189,28 @@
 		A35BAC5D1C1AC808004FFABC /* SwiftyLabel */ = {
 			isa = PBXGroup;
 			children = (
+				A3BF75A61C474A00007E1C89 /* Extensions */,
 				A35BAC5F1C1AC808004FFABC /* SwiftyLabel.swift */,
 				A3987DE81C22964600CF5202 /* SwiftyTextLink.swift */,
-				A35BAC631C1AC808004FFABC /* SwiftyTextStorage.swift */,
 				A35BAC611C1AC808004FFABC /* SwiftyTextAttachment.swift */,
 				A37B90F01C2AC72500F37FA1 /* SwiftyTextParser.swift */,
 				A35BAC621C1AC808004FFABC /* SwiftyTextDetector.swift */,
-				A35BAC641C1AC808004FFABC /* UIBezierPath+Rects.swift */,
-				A35BAC5E1C1AC808004FFABC /* NSLayoutManager+GlyphRects.swift */,
 				A37B91051C317E1500F37FA1 /* SwiftyLabelTapRecognizer.swift */,
 				A37B91031C317BAA00F37FA1 /* SwiftyLabelLongPressRecognizer.swift */,
 				A35BAC1A1C1AC705004FFABC /* Info.plist */,
 			);
 			path = SwiftyLabel;
+			sourceTree = "<group>";
+		};
+		A3BF75A61C474A00007E1C89 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				A3BF75A71C474A00007E1C89 /* NSAttributedString+SwiftyText.swift */,
+				A3BF75A91C474A00007E1C89 /* NSMutableAttributedString+SwiftyText.swift */,
+				A3BF75A81C474A00007E1C89 /* NSLayoutManager+GlyphRects.swift */,
+				A3BF75AA1C474A00007E1C89 /* UIBezierPath+Rects.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -343,15 +354,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3BF75AB1C474A00007E1C89 /* NSAttributedString+SwiftyText.swift in Sources */,
 				A37B91041C317BAA00F37FA1 /* SwiftyLabelLongPressRecognizer.swift in Sources */,
 				A3987DE91C22964600CF5202 /* SwiftyTextLink.swift in Sources */,
 				A35BAC661C1AC808004FFABC /* SwiftyLabel.swift in Sources */,
 				A35BAC691C1AC808004FFABC /* SwiftyTextDetector.swift in Sources */,
 				A37B90F11C2AC72500F37FA1 /* SwiftyTextParser.swift in Sources */,
-				A35BAC6A1C1AC808004FFABC /* SwiftyTextStorage.swift in Sources */,
+				A3BF75AC1C474A00007E1C89 /* NSLayoutManager+GlyphRects.swift in Sources */,
+				A3BF75AE1C474A00007E1C89 /* UIBezierPath+Rects.swift in Sources */,
+				A3BF75AD1C474A00007E1C89 /* NSMutableAttributedString+SwiftyText.swift in Sources */,
 				A35BAC681C1AC808004FFABC /* SwiftyTextAttachment.swift in Sources */,
-				A35BAC6B1C1AC808004FFABC /* UIBezierPath+Rects.swift in Sources */,
-				A35BAC651C1AC808004FFABC /* NSLayoutManager+GlyphRects.swift in Sources */,
 				A37B91061C317E1500F37FA1 /* SwiftyLabelTapRecognizer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
