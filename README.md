@@ -35,6 +35,14 @@
 github "kejinlu/SwiftyText"
 ```
 
+你也可以使用Cocoapods来进行集成
+
+```
+platform :ios, '8.0'
+use_frameworks!
+pod 'SwiftyText'
+```
+
 ### 使用
 
 #### 基本设置
