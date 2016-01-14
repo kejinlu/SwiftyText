@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'SwiftyText'
-  s.version = '0.0.2'
+  s.version = '0.0.3'
   s.license = 'MIT'
   s.summary = 'SwiftyText in Swift based on Text Kit'
   s.homepage = 'https://github.com/kejinlu/SwiftyText'
