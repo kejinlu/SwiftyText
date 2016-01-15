@@ -12,7 +12,7 @@ import SwiftyText
 class ListViewController: UITableViewController, SwiftyLabelDelegate {
     var attributedTexts = [NSAttributedString]()
     override func viewDidLoad() {
-        self.tableView.allowsSelection = false
+        //self.tableView.allowsSelection = false
         self.tableView.contentInset = UIEdgeInsetsMake(20.0, 0.0, 0.0, 0.0)
         var i = 0
         while i < 75 {
@@ -49,6 +49,10 @@ class ListViewController: UITableViewController, SwiftyLabelDelegate {
         cell.swiftyLabel.drawsTextAsynchronously = true
         cell.swiftyLabel.attributedText = attributedText
         return cell
+    }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        print("row selected")
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {

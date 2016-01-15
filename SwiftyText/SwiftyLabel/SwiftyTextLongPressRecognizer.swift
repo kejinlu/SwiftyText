@@ -9,7 +9,7 @@
 import Foundation
 import UIKit.UIGestureRecognizerSubclass
 
-public class SwiftyLabelLongPressRecognizer: UIGestureRecognizer {
+public class SwiftyTextLongPressRecognizer: UIGestureRecognizer {
     public var minimumPressDuration: CFTimeInterval = 0.7
     public var allowableMovement: CGFloat = 10.0
     internal var initialPoint: CGPoint = CGPointZero

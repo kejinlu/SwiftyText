@@ -9,7 +9,7 @@
 import Foundation
 import UIKit.UIGestureRecognizerSubclass
 
-public class SwiftyLabelTapRecognizer: UIGestureRecognizer {
+public class SwiftyTextTapRecognizer: UIGestureRecognizer {
     public var numberOfTapsRequired: Int = 1
     internal var timeoutTimer: NSTimer?
     
