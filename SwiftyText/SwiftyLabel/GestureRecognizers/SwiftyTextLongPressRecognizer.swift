@@ -9,15 +9,13 @@
 import Foundation
 import UIKit.UIGestureRecognizerSubclass
 
-class SwiftyTextLongPressRecognizer: UIGestureRecognizer {
+class SwiftyTextLongPressRecognizer: SwiftyTextGestureRecognizer {
     var minimumPressDuration: CFTimeInterval = 0.7
     var allowableMovement: CGFloat = 10.0
     var initialPoint: CGPoint = CGPointZero
     
     var longPressTimer: NSTimer?
-    
-    var userInfo: [String: Any]?
-    
+        
     func isTouchCloseToInitialPoint(touch: UITouch) -> Bool {
         let point = touch.locationInView(self.view)
         let xDistance = self.initialPoint.x - point.x

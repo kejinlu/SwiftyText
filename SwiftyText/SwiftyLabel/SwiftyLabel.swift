@@ -353,7 +353,7 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     
     // MARK:- Touch Info reset
     
-    func resetTouch(){
+    func resetTouchInfo(){
         self.touchHighlightLayer?.removeFromSuperlayer()
         self.touchHighlightLayer = nil
         
@@ -383,7 +383,7 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
         if touch.view == self {
             var should = false
-            if self.touchInfo != nil && self.touchInfo?.link != nil && self.touchInfo?.touch != nil && self.touchInfo?.touch! == touch {
+            if self.touchInfo?.link != nil && self.touchInfo?.touch != nil && self.touchInfo?.touch! == touch {
                 should = true
             } else {
                 self.touchInfo = SwiftyLabelTouchInfo(aTouch: touch)
@@ -392,20 +392,11 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
                 }
             }
             
-            if should {
-                var userInfo = [String: Any]()
-                userInfo["link"] = self.touchInfo!.link!
-                userInfo["linkRange"] = self.touchInfo!.linkRange!
-                userInfo["linkGlyphRects"] = self.touchInfo?.linkGlyphRects!
-                
-                if gestureRecognizer is SwiftyTextTapRecognizer {
-                    let tapRecognizer = gestureRecognizer as! SwiftyTextTapRecognizer
-                    tapRecognizer.userInfo = userInfo
-                }
-                if gestureRecognizer is SwiftyTextLongPressRecognizer {
-                    let longPressRecognizer = gestureRecognizer as! SwiftyTextLongPressRecognizer
-                    longPressRecognizer.userInfo = userInfo
-                }
+            if should && gestureRecognizer is SwiftyTextGestureRecognizer {
+                let textGestureRecognizer = gestureRecognizer as! SwiftyTextGestureRecognizer
+                textGestureRecognizer.link = self.touchInfo!.link
+                textGestureRecognizer.linkRange = self.touchInfo!.linkRange
+                textGestureRecognizer.linkGlyphRects = self.touchInfo?.linkGlyphRects
             }
             
             return should
@@ -421,15 +412,10 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     // MARK:- GestureRecognizer Actions
     internal func handleSingleTap(gestureRecognizer: SwiftyTextTapRecognizer) {
         if gestureRecognizer.state == .Ended {
-            if gestureRecognizer.userInfo != nil {
-                let link = gestureRecognizer.userInfo!["link"] as? SwiftyTextLink
-                let linkRange = gestureRecognizer.userInfo!["linkRange"] as? NSRange
-                let linkGlyphRects = gestureRecognizer.userInfo!["linkGlyphRects"] as? [CGRect]
-                if link != nil && linkRange != nil && linkGlyphRects != nil {
-                    let location = gestureRecognizer.locationInView(self)
-                    if location.isInRects(linkGlyphRects!) {
-                        self.delegate?.swiftyLabel(self, didTapWithTextLink: link!, range: linkRange!)
-                    }
+            if gestureRecognizer.link != nil && gestureRecognizer.linkRange != nil && gestureRecognizer.linkGlyphRects != nil{
+                let location = gestureRecognizer.locationInView(self)
+                if location.isInRects(gestureRecognizer.linkGlyphRects!) {
+                    self.delegate?.swiftyLabel(self, didTapWithTextLink: gestureRecognizer.link!, range: gestureRecognizer.linkRange!)
                 }
             }
         }
@@ -437,15 +423,11 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     
     internal func handleLongPress(gestureRecognizer: SwiftyTextLongPressRecognizer) {
         if gestureRecognizer.state == .Ended {
-            if gestureRecognizer.userInfo != nil {
-                let link = gestureRecognizer.userInfo!["link"] as? SwiftyTextLink
-                let linkRange = gestureRecognizer.userInfo!["linkRange"] as? NSRange
-                let linkGlyphRects = gestureRecognizer.userInfo!["linkGlyphRects"] as? [CGRect]
-                if link != nil && linkRange != nil && linkGlyphRects != nil {
-                    let location = gestureRecognizer.locationInView(self)
-                    if location.isInRects(linkGlyphRects!) {
-                        self.delegate?.swiftyLabel(self, didLongPressWithTextLink: link!, range: linkRange!)
-                    }
+            
+            if gestureRecognizer.link != nil && gestureRecognizer.linkRange != nil && gestureRecognizer.linkGlyphRects != nil{
+                let location = gestureRecognizer.locationInView(self)
+                if location.isInRects(gestureRecognizer.linkGlyphRects!) {
+                    self.delegate?.swiftyLabel(self, didLongPressWithTextLink: gestureRecognizer.link!, range: gestureRecognizer.linkRange!)
                 }
             }
         }
@@ -492,12 +474,8 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
             }
         }
         
-        if gestureRecognizer.state == .Ended {
-            self.resetTouch()
-        }
-        
-        if gestureRecognizer.state == .Cancelled {
-            self.resetTouch()
+        if gestureRecognizer.state == .Ended || gestureRecognizer.state == .Cancelled || gestureRecognizer.state == .Failed{
+            self.resetTouchInfo()
         }
     }
     

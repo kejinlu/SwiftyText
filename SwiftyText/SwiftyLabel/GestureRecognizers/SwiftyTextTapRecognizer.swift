@@ -9,12 +9,10 @@
 import Foundation
 import UIKit.UIGestureRecognizerSubclass
 
-class SwiftyTextTapRecognizer: UIGestureRecognizer {
+class SwiftyTextTapRecognizer: SwiftyTextGestureRecognizer {
     var numberOfTapsRequired: Int = 1
     var timeoutTimer: NSTimer?
     
-    var userInfo: [String: Any]?
-
     override func reset() {
         timeoutTimer?.invalidate()
         timeoutTimer = nil
