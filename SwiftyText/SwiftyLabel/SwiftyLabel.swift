@@ -250,7 +250,7 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     public var highlightLayerColor: UIColor?;
     
     internal var touchHighlightLayer: CALayer?
-    internal var touchInfo = SwiftyLabelTouchInfo()
+    internal var touchInfo: SwiftyLabelTouchInfo?
     
     //[rangeString: [attributeName: attribute]]
     internal var touchAttributesMap: [String: [String: AnyObject]]?
@@ -286,10 +286,6 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
         self.addGestureRecognizer(self.touchRecognizer)
         
         self.singleTapRecognizer.requireGestureRecognizerToFail(self.longPressRecognizer)
-        
-        //self.touchRecognizer.requireGestureRecognizerToFail(self.singleTapRecognizer)
-        //self.touchRecognizer.requireGestureRecognizerToFail(self.longPressRecognizer)
-        
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "voiceOverStatusChanged", name: UIAccessibilityVoiceOverStatusChanged, object: nil)
     }
@@ -359,23 +355,22 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     
     func resetTouch(){
         self.touchHighlightLayer?.removeFromSuperlayer()
-        
-        
-        if touchInfo.link?.highlightedAttributes != nil {
-            self.setHighlight(false, withRange: touchInfo.linkRange!, textLink: touchInfo.link!)
-        }
         self.touchHighlightLayer = nil
-        self.touchAttributesMap = nil
         
-        touchInfo.reset()
+        if self.touchInfo?.link?.highlightedAttributes != nil {
+            self.setHighlight(false, withRange: self.touchInfo!.linkRange!, textLink: self.touchInfo!.link!)
+        }
+        
+        self.touchAttributesMap = nil
+        self.touchInfo = nil
     }
     
     // MARK:- GestureRecognizer Delegate
     public override func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer == self.singleTapRecognizer || gestureRecognizer == self.longPressRecognizer || gestureRecognizer == self.touchRecognizer {
-            let link = touchInfo.link
+            let link = self.touchInfo?.link
             if link != nil {
-                if (link!.gestures.contains(.Tap) && gestureRecognizer == self.singleTapRecognizer) || (link!.gestures.contains(.LongPress) && gestureRecognizer == self.longPressRecognizer) || ((link!.gestures.contains(.Tap) || link!.gestures.contains(.LongPress)) && gestureRecognizer == self.touchRecognizer) {
+                if (link!.gestures.contains(.Tap) && gestureRecognizer == self.singleTapRecognizer) || (link!.gestures.contains(.LongPress) && gestureRecognizer == self.longPressRecognizer) || (link!.gestures != .None && gestureRecognizer == self.touchRecognizer) {
                     return true
                 }
             }
@@ -387,13 +382,33 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     
     public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
         if touch.view == self {
-            //TODO:减少次数
-            self.touchInfo.configWithTouch(touch)
-            if self.touchInfo.link != nil {
-                return true
+            var should = false
+            if self.touchInfo != nil && self.touchInfo?.link != nil && self.touchInfo?.touch != nil && self.touchInfo?.touch! == touch {
+                should = true
             } else {
-                return false
+                self.touchInfo = SwiftyLabelTouchInfo(aTouch: touch)
+                if self.touchInfo?.link != nil {
+                    should = true
+                }
             }
+            
+            if should {
+                var userInfo = [String: Any]()
+                userInfo["link"] = self.touchInfo!.link!
+                userInfo["linkRange"] = self.touchInfo!.linkRange!
+                userInfo["linkGlyphRects"] = self.touchInfo?.linkGlyphRects!
+                
+                if gestureRecognizer is SwiftyTextTapRecognizer {
+                    let tapRecognizer = gestureRecognizer as! SwiftyTextTapRecognizer
+                    tapRecognizer.userInfo = userInfo
+                }
+                if gestureRecognizer is SwiftyTextLongPressRecognizer {
+                    let longPressRecognizer = gestureRecognizer as! SwiftyTextLongPressRecognizer
+                    longPressRecognizer.userInfo = userInfo
+                }
+            }
+            
+            return should
         } else {
             return false
         }
@@ -406,10 +421,15 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     // MARK:- GestureRecognizer Actions
     internal func handleSingleTap(gestureRecognizer: SwiftyTextTapRecognizer) {
         if gestureRecognizer.state == .Ended {
-            if let link = touchInfo.link {
-                let location = gestureRecognizer.locationInView(self)
-                if location.isInRects(touchInfo.linkGlyphRects!) {
-                    self.delegate?.swiftyLabel(self, didTapWithTextLink: link, range: touchInfo.linkRange!)
+            if gestureRecognizer.userInfo != nil {
+                let link = gestureRecognizer.userInfo!["link"] as? SwiftyTextLink
+                let linkRange = gestureRecognizer.userInfo!["linkRange"] as? NSRange
+                let linkGlyphRects = gestureRecognizer.userInfo!["linkGlyphRects"] as? [CGRect]
+                if link != nil && linkRange != nil && linkGlyphRects != nil {
+                    let location = gestureRecognizer.locationInView(self)
+                    if location.isInRects(linkGlyphRects!) {
+                        self.delegate?.swiftyLabel(self, didTapWithTextLink: link!, range: linkRange!)
+                    }
                 }
             }
         }
@@ -417,23 +437,31 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     
     internal func handleLongPress(gestureRecognizer: SwiftyTextLongPressRecognizer) {
         if gestureRecognizer.state == .Ended {
-            if let link = touchInfo.link {
-                self.delegate?.swiftyLabel(self, didLongPressWithTextLink: link, range: touchInfo.linkRange!)
+            if gestureRecognizer.userInfo != nil {
+                let link = gestureRecognizer.userInfo!["link"] as? SwiftyTextLink
+                let linkRange = gestureRecognizer.userInfo!["linkRange"] as? NSRange
+                let linkGlyphRects = gestureRecognizer.userInfo!["linkGlyphRects"] as? [CGRect]
+                if link != nil && linkRange != nil && linkGlyphRects != nil {
+                    let location = gestureRecognizer.locationInView(self)
+                    if location.isInRects(linkGlyphRects!) {
+                        self.delegate?.swiftyLabel(self, didLongPressWithTextLink: link!, range: linkRange!)
+                    }
+                }
             }
         }
     }
     
     internal func handleTouch(gestureRecognizer: SwiftyTextTouchRecognizer) {
         if gestureRecognizer.state == .Began {
-            if let link = touchInfo.link {
+            if let link = self.touchInfo?.link {
                 
                 let shapeLayer = CAShapeLayer()
-                shapeLayer.path = UIBezierPath.bezierPathWithGlyphRects(touchInfo.linkGlyphRects!, radius: (link.highlightLayerRadius ?? 3.0)).CGPath
+                shapeLayer.path = UIBezierPath.bezierPathWithGlyphRects(self.touchInfo!.linkGlyphRects!, radius: (link.highlightLayerRadius ?? 3.0)).CGPath
                 shapeLayer.fillColor = link.highlightLayerColor?.CGColor ?? UIColor.grayColor().colorWithAlphaComponent(0.3).CGColor
                 self.touchHighlightLayer = shapeLayer
                 
                 if link.highlightedAttributes != nil {
-                    self.setHighlight(true, withRange: touchInfo.linkRange!, textLink: link)
+                    self.setHighlight(true, withRange: self.touchInfo!.linkRange!, textLink: link)
                 }
             }
             
@@ -443,21 +471,21 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
         }
         
         if gestureRecognizer.state == .Changed {
-            if touchInfo.link != nil && self.touchHighlightLayer != nil {
+            if self.touchInfo?.link != nil && self.touchHighlightLayer != nil {
                 let location = gestureRecognizer.locationInView(self)
-                if location.isInRects(touchInfo.linkGlyphRects!) {
+                if location.isInRects(self.touchInfo!.linkGlyphRects!) {
                     if self.touchHighlightLayer?.superlayer != self.layer {
                         self.layer.addSublayer(self.touchHighlightLayer!)
-                        if touchInfo.link?.highlightedAttributes != nil {
-                            self.setHighlight(true, withRange: touchInfo.linkRange!, textLink: touchInfo.link!)
+                        if self.touchInfo!.link?.highlightedAttributes != nil {
+                            self.setHighlight(true, withRange: self.touchInfo!.linkRange!, textLink: self.touchInfo!.link!)
                         }
                     }
                     
                 } else {
                     if self.touchHighlightLayer?.superlayer == self.layer {
                         self.touchHighlightLayer!.removeFromSuperlayer()
-                        if touchInfo.link?.highlightedAttributes != nil {
-                            self.setHighlight(false, withRange: touchInfo.linkRange!, textLink: touchInfo.link!)
+                        if self.touchInfo?.link?.highlightedAttributes != nil {
+                            self.setHighlight(false, withRange: self.touchInfo!.linkRange!, textLink: self.touchInfo!.link!)
                         }
                     }
                 }
@@ -700,7 +728,7 @@ struct SwiftyLabelTouchInfo{
     var linkRange: NSRange?
     var linkGlyphRects: [CGRect]?
     
-    mutating func configWithTouch(aTouch: UITouch) {
+    init(aTouch: UITouch) {
         self.touch = aTouch
         
         let label = aTouch.view as? SwiftyLabel
@@ -709,18 +737,11 @@ struct SwiftyLabelTouchInfo{
         var effectiveGlyphRects = [CGRect]()
         
         let touchLink = label?.linkAtLocation(location, effectiveRange: &effectiveRange, effectiveGlyphRects: &effectiveGlyphRects)
-        if touchLink != nil {
+        if touchLink != nil && effectiveRange.location != NSNotFound && effectiveGlyphRects.count > 0{
             self.link = touchLink
             self.linkRange = effectiveRange
             self.linkGlyphRects = effectiveGlyphRects
         }
-    }
-    
-    mutating func reset(){
-        self.touch = nil
-        self.link = nil
-        self.linkRange = nil
-        self.linkGlyphRects = nil
     }
 }
 

@@ -9,14 +9,16 @@
 import Foundation
 import UIKit.UIGestureRecognizerSubclass
 
-public class SwiftyTextLongPressRecognizer: UIGestureRecognizer {
-    public var minimumPressDuration: CFTimeInterval = 0.7
-    public var allowableMovement: CGFloat = 10.0
-    internal var initialPoint: CGPoint = CGPointZero
+class SwiftyTextLongPressRecognizer: UIGestureRecognizer {
+    var minimumPressDuration: CFTimeInterval = 0.7
+    var allowableMovement: CGFloat = 10.0
+    var initialPoint: CGPoint = CGPointZero
     
-    internal var longPressTimer: NSTimer?
+    var longPressTimer: NSTimer?
     
-    internal func isTouchCloseToInitialPoint(touch: UITouch) -> Bool {
+    var userInfo: [String: Any]?
+    
+    func isTouchCloseToInitialPoint(touch: UITouch) -> Bool {
         let point = touch.locationInView(self.view)
         let xDistance = self.initialPoint.x - point.x
         let yDistance = self.initialPoint.y - point.y
@@ -26,12 +28,12 @@ public class SwiftyTextLongPressRecognizer: UIGestureRecognizer {
         return isClose
     }
     
-    internal func longPressed(timer: NSTimer) {
+    func longPressed(timer: NSTimer) {
         timer.invalidate()
         self.state = .Ended
     }
     
-    public override func reset(){
+    override func reset(){
         super.reset()
         
         self.initialPoint = CGPointZero
@@ -39,7 +41,7 @@ public class SwiftyTextLongPressRecognizer: UIGestureRecognizer {
         self.longPressTimer = nil
     }
     
-    public override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent) {
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent) {
         super.touchesBegan(touches, withEvent: event)
         
         guard touches.count == 1 else {
@@ -55,7 +57,7 @@ public class SwiftyTextLongPressRecognizer: UIGestureRecognizer {
         }
     }
     
-    public override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent) {
+    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent) {
         if let touch = touches.first{
             if !self.isTouchCloseToInitialPoint(touch){
                 self.longPressTimer?.invalidate()
@@ -66,12 +68,12 @@ public class SwiftyTextLongPressRecognizer: UIGestureRecognizer {
         super.touchesMoved(touches, withEvent: event)
     }
     
-    public override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent) {
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent) {
         super.touchesEnded(touches, withEvent: event)
         self.state = .Failed
     }
     
-    override public func touchesCancelled(touches: Set<UITouch>, withEvent event: UIEvent) {
+    override func touchesCancelled(touches: Set<UITouch>, withEvent event: UIEvent) {
         super.touchesCancelled(touches, withEvent: event)
         self.state = .Cancelled
     }

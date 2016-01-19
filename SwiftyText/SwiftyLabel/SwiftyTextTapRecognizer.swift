@@ -9,21 +9,23 @@
 import Foundation
 import UIKit.UIGestureRecognizerSubclass
 
-public class SwiftyTextTapRecognizer: UIGestureRecognizer {
-    public var numberOfTapsRequired: Int = 1
-    internal var timeoutTimer: NSTimer?
+class SwiftyTextTapRecognizer: UIGestureRecognizer {
+    var numberOfTapsRequired: Int = 1
+    var timeoutTimer: NSTimer?
     
-    override public func reset() {
+    var userInfo: [String: Any]?
+
+    override func reset() {
         timeoutTimer?.invalidate()
         timeoutTimer = nil
     }
     
-    internal func handleTimeout(timer: NSTimer) {
+    func handleTimeout(timer: NSTimer) {
         timer.invalidate()
         self.state = .Cancelled
     }
     
-    override public func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent) {
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent) {
         super.touchesBegan(touches, withEvent: event)
         guard touches.count == 1 else {
             self.state = .Failed
@@ -32,12 +34,14 @@ public class SwiftyTextTapRecognizer: UIGestureRecognizer {
         self.state = .Began
     }
     
-    override public func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent) {
+    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent) {
         super.touchesMoved(touches, withEvent: event)
         self.state = .Changed
     }
     
-    public override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent) {
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent) {
+        super.touchesEnded(touches, withEvent: event)
+        
         if let touch = touches.first {
             if self.numberOfTapsRequired == 1 {
                 if touch.tapCount == 1 || touch.tapCount == 0 {
@@ -57,11 +61,9 @@ public class SwiftyTextTapRecognizer: UIGestureRecognizer {
                 }
             }
         }
-        
-        super.touchesEnded(touches, withEvent: event)
     }
     
-    override public func touchesCancelled(touches: Set<UITouch>, withEvent event: UIEvent) {
+    override func touchesCancelled(touches: Set<UITouch>, withEvent event: UIEvent) {
         super.touchesCancelled(touches, withEvent: event)
         self.state = .Cancelled
     }
