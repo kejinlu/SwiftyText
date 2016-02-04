@@ -605,6 +605,8 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
         proposedSize.height = ceil(proposedSize.height)
         proposedSize.width += (self.textContainerInset.left + self.textContainerInset.right)
         proposedSize.height += (self.textContainerInset.top + self.textContainerInset.bottom)
+        proposedSize.width = ceil(proposedSize.width)
+        proposedSize.height = ceil(proposedSize.height)
         return proposedSize;
     }
     
@@ -655,37 +657,32 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
         
         // Text element itself
         let textElement = UIAccessibilityElement(accessibilityContainer: self)
-        textElement.accessibilityValue = self.text
+        textElement.accessibilityLabel = self.text
         textElement.accessibilityTraits = UIAccessibilityTraitStaticText
         textElement.accessibilityFrame = UIAccessibilityConvertFrameToScreenCoordinates(self.bounds,self)
-        
-        let languageID = NSBundle.mainBundle().preferredLocalizations.first
-        if languageID == "zh_CN" || languageID == "zh_TW" {
-            textElement.accessibilityLabel = "当前是一段文本，内含链接，向右以选择链接"
-        } else {
-            textElement.accessibilityLabel = "This is a text that contains links, slide right to select link"
-        }
         elements.append(textElement)
         
         // link element
-        self.textStorage.enumerateAttribute(SwiftyTextLinkAttributeName, inRange: self.textStorage.entireRange(), options:[]) { (value: AnyObject?, range: NSRange, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
-            if value != nil && value is SwiftyTextLink {
-                let linkElement = UIAccessibilityElement(accessibilityContainer: self)
-                
-                let glyphRects = self.layoutManager.glyphRectsWithCharacterRange(range, containerInset: self.textContainerInset)
-                var screenRects = [CGRect]()
-                if glyphRects != nil {
-                    for glyphRect in glyphRects! {
-                        screenRects.append(UIAccessibilityConvertFrameToScreenCoordinates(glyphRect, self))
-                    }
+        dispatch_sync(self.textQueue) { () -> Void in
+            self.textStorage.enumerateAttribute(SwiftyTextLinkAttributeName, inRange: self.textStorage.entireRange(), options:[]) { (value: AnyObject?, range: NSRange, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
+                if value != nil && value is SwiftyTextLink {
+                    let linkElement = UIAccessibilityElement(accessibilityContainer: self)
                     
-                    linkElement.accessibilityPath = UIBezierPath.bezierPathWithGlyphRects(screenRects, radius: 0)
-                    let firstScreenRect = screenRects[0]
-                    let firstCenterPoint = CGPointMake(firstScreenRect.midX, firstScreenRect.midY)
-                    linkElement.accessibilityActivationPoint = firstCenterPoint
-                    linkElement.accessibilityValue = (self.text! as NSString).substringWithRange(range)
-                    linkElement.accessibilityTraits = UIAccessibilityTraitLink
-                    elements.append(linkElement)
+                    let glyphRects = self.layoutManager.glyphRectsWithCharacterRange(range, containerInset: self.textContainerInset)
+                    var screenRects = [CGRect]()
+                    if glyphRects != nil {
+                        for glyphRect in glyphRects! {
+                            screenRects.append(UIAccessibilityConvertFrameToScreenCoordinates(glyphRect, self))
+                        }
+                        
+                        linkElement.accessibilityPath = UIBezierPath.bezierPathWithGlyphRects(screenRects, radius: 0)
+                        let firstScreenRect = screenRects[0]
+                        let firstCenterPoint = CGPointMake(firstScreenRect.midX, firstScreenRect.midY)
+                        linkElement.accessibilityActivationPoint = firstCenterPoint
+                        linkElement.accessibilityLabel = (self.text! as NSString).substringWithRange(range)
+                        linkElement.accessibilityTraits = UIAccessibilityTraitLink
+                        elements.append(linkElement)
+                    }
                 }
             }
         }

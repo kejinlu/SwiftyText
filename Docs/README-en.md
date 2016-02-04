@@ -5,11 +5,11 @@
 [![Build Status](https://travis-ci.org/kejinlu/SwiftyText.svg?branch=master)](https://travis-ci.org/kejinlu/SwiftyText)
  
 ### Goals & Features
-- Link Attribute
-- Attachment Enhancements: Vertical alignment, view based attachment
-- Text Detectors
-- Asynchronous Text Rendering
-- Accessibility
+- **Link Attribute** Gestures support, delegate methods
+- **Attachment Enhancements** Vertical alignment, view based attachment
+- **Text Parser** 
+- **Asynchronous Text Rendering** Render text in background thread
+- **Accessibility**  Voiceover supported for links
 
 ### Requirements
 - iOS 8.0+
@@ -17,11 +17,18 @@
 
 ### Integration
 
-#### Carthage
 You can use [Carthage](https://github.com/Carthage/Carthage) to install SwiftyText by adding it to your Cartfile:
 
 ```
 github "kejinlu/SwiftyText"
+```
+
+Of course, you can use [Cocoapods](https://github.com/CocoaPods/CocoaPods).
+
+```
+platform :ios, '8.0'
+use_frameworks!
+pod 'SwiftyText'
 ```
 
 ### Usage
@@ -30,6 +37,8 @@ github "kejinlu/SwiftyText"
 - **text** Assigning a new value to this property also replaces the value of the attributedText property with the same text, albeit without any inherent style attributes. Instead the label styles the new string using the font, textColor, and other style-related properties of the class.
 - **attributedText** Assigning a new value to this property also replaces the value of the text property with the same string data, albeit without any formatting information. In addition, assigning a new a value updates the values in the font, textColor, and other style-related properties so that they reflect the style information starting at location 0 in the attributed string.
 - **numberOfLines** This property controls the maximum number of lines to use in order to fit the label’s text into its bounding rectangle. The default value for this property is 0 which means using as many lines as needed（By now found a bug with Text Kit，numberOfLines will not work when lineBreakMode set to NSLineBreakByCharWrapping)
+
+
 
 Here gives an example of creating a SwiftyLabel：
 
