@@ -35,7 +35,7 @@
 github "kejinlu/SwiftyText"
 ```
 
-你也可以使用Cocoapods来进行集成
+你也可以使用CocoaPods来进行集成
 
 ```
 platform :ios, '8.0'
