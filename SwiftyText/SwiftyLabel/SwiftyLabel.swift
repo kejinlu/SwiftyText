@@ -259,7 +259,7 @@ public class SwiftyLabel: UIView, NSLayoutManagerDelegate, UIGestureRecognizerDe
     internal var longPressRecognizer = SwiftyTextLongPressRecognizer()
     internal var touchRecognizer = SwiftyTextTouchRecognizer()
     
-    public var delegate: SwiftyLabelDelegate?
+    weak public var delegate: SwiftyLabelDelegate?
     
     // MARK:- Init
     
